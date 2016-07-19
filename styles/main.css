@@ -1,0 +1,11 @@
+#main {
+	width: 500px;
+	height: 600px;
+	margin: 20px auto 0px;
+	background-color: #F0F2F3;
+}
+.left {
+	width: 300px;
+	height: 600px;
+	background-color: red;
+}
