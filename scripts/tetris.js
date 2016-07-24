@@ -8,7 +8,7 @@ var Tetris = {
 	currentIntervalID: -1,
 	//当前活动的方块，存储其类型以及坐标
 	//坐标为一个三维数组，第二维为按列划分，第三维即坐标点
-	currentBlock: {},
+	currentBlock: null,
 	//画笔
 	brush: null,
 	//每个方格的大小
@@ -514,6 +514,7 @@ var Tetris = {
 	 * @param keyCode 键码
 	 */
 	handleKeyEvent: function (keyCode) {
+        if (Tetris.utils.checkCurrent()) return;
 		switch (keyCode) {
 			case 37:
 				Tetris.moveLeft();
@@ -555,13 +556,17 @@ var Tetris = {
 	 * 将当前的活动方块下移一行
 	 */
 	moveBlock: function () {
+        if (Tetris.utils.checkCurrent()) {
+            Tetris.addBlock();
+            return;
+        }
 		//逐列检查第一个box下方是否有box
 		var points = Tetris.currentBlock.points, i, j, cols, p, n, rows = Tetris.boxNum.rows,
 			type = Tetris.currentBlock.type;
 		for (i = 0, cols = points.length; i < cols; i++) {
 			p = points[i][0];
 			if ((n = p[1] + 1) >= rows || Tetris.boxes[p[0]][n] > 0) {
-				Tetris.blockDead();
+				Tetris.addBlock();
 				return;
 			}
 		}
@@ -623,7 +628,7 @@ var Tetris = {
 	 */
 	faster: function () {
 		var points = Tetris.currentBlock.points,
-			cols = points.length, i, j, l, p, deep, minDepth = 20, rows = Tetris.boxNum.rows;
+			cols = points.length, i, j, l, p, deep, minDepth = 20, rows = Tetris.boxNum.rows, type = +Tetris.currentBlock.type;
 		//寻找每一列可以下落的最小值
 		for (i = 0; i < cols; i++) {
 			//每一列的第一行坐标
@@ -639,10 +644,12 @@ var Tetris = {
 		for (i = 0; i < cols; i++) {
 			for (j = 0, l = points[i].length; j < l; j++) {
 				p = points[i][j];
-				Tetris.boxes[p[0]][p[1] + minDepth] = Tetris.boxes[p[0]][p[1]];
+				Tetris.boxes[p[0]][p[1] + minDepth] = type;
 				Tetris.boxes[p[0]][p[1]] = 0;
+                p[1] += minDepth;
 			}
 		}
+        Tetris.currentBlock = null;
 		Tetris.refresh(true);
 	},
 	/**
@@ -651,7 +658,6 @@ var Tetris = {
 	transform: function () {
 		var type = +Tetris.currentBlock.type;
 		if (type === 4) return;
-		//Tetris.shapes[type].transform();
         var relativeCoordinate = Tetris.shapes[type].getRelativeCoordinate(), o,
             points = Tetris.currentBlock.points, p = points[0][0], x = p[0], y = p[1], i, l, p;
         //检测边缘
@@ -698,21 +704,9 @@ var Tetris = {
 	pause: function () {
 
 	},
-	/**
-	 * 方块无法继续向下移动
-	 * 1. 添加一个新的方块
-	 * 2. 确定下一块，并显示出来
-	 */
-	blockDead: function () {
-
-	},
-    /**
-     * 在顶部生成一个新的方块
-     */
     addBlock: function() {
-		//var type = Tetris.utils.getRandomInt(1, 8);
-		//var next = Tetris.utils.getRandomInt(1, 8);
-		var type = 3, next = 3;
+		var type = Tetris.utils.getRandomInt(1, 8);
+		var next = Tetris.utils.getRandomInt(1, 8);
 		Tetris.setNextBlock(next);
 		if (Tetris.shapes[type].add())
 			Tetris.gameOver();
@@ -729,7 +723,8 @@ var Tetris = {
 	 * TODO
 	 */
 	gameOver: function () {
-
+        clearInterval(Tetris.currentIntervalID);
+        Tetris.currentBlock = null;
 	},
     //工具方法集合
     utils: {
@@ -774,6 +769,13 @@ var Tetris = {
             var t = relativeCoordinates[this.indexer.next()];
             t.decreaseIndex = this.indexer.decrease;
             return t;
+        },
+        /**
+         * [[检查当前是否有活动方块，如果没有，不允许进行左，右，下的移动以及变形]]
+         * @returns {[[Boolean]]} [[没有返回true]]
+         */
+        checkCurrent: function() {
+            return Tetris.currentBlock === null;
         }
     }
 };
