@@ -561,7 +561,7 @@ var Tetris = {
 	 */
 	refresh: function(flag) {
 		if (!flag)
-			Tetris.moveBlock();
+			Tetris.moveCurrentPoints();
 		for (var i = 0;i < Tetris.boxNum.cols;i ++) {
 			for (var j =  0;j < Tetris.boxNum.rows;j ++) {
 				var n;
@@ -576,7 +576,7 @@ var Tetris = {
 	/**
 	 * 将当前的活动方块下移一行
 	 */
-	moveBlock: function () {
+	moveCurrentPoints: function (lines) {
         if (Tetris.utils.checkCurrent()) {
             Tetris.addBlock();
             return;
@@ -719,6 +719,41 @@ var Tetris = {
         Tetris.currentBlock.points = relativeCoordinate.rebuildCurrentPoints(x, y);
 		Tetris.refresh(true);
 	},
+    /**
+     * 检测满行，消除并计分
+     * @param {Number} offset 检测的起始行数(倒序检测)
+     */
+    removeLines: function(offset) {
+        var i, j, ps = 0, cols = Tetris.boxNum.cols;
+        for (i = offset; i >= 0; i--) {
+            for (j = 0; j < cols; j++) {
+                if (Tetris.boxes[j][i] === 0) break;
+            }
+            if (j === cols - 1) ps += 10;
+        }
+        var n = ps / 10;
+        Tetris.moveBlocks(offset - n, n);
+        Tetris.refreshPoints(ps);
+    },
+    /**
+     * 将方块下移指定行
+     * @param {Number} offset 起始行(倒序)
+     * @param {Number} lines  移动的行数
+     */
+    moveBlocks: function(offset, lines) {
+        var i, j = offset + 1, l = offset + lines, cols = Tetris.boxNum.cols;
+        //擦除被覆盖行
+        for (i = 0; i < cols; i++) {
+            //TODO
+        }
+    },
+    /**
+     * 刷新分数显示
+     * @param {Number} ps 增长的分数
+     */
+    refreshPoints: function(ps) {
+        
+    },
 	/**
 	 * 暂停
 	 */
@@ -733,7 +768,7 @@ var Tetris = {
 	},
     /**
      * [[绘制下一个方块示意图]]
-     * @param {[[Integer]]} next [[下一个方块的类型]]
+     * @param {[[Number]]} next [[下一个方块的类型]]
      */
     setNextBlock: function(next) {
         Tetris.nextType = next;
