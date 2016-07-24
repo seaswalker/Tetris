@@ -20,7 +20,7 @@ var Tetris = {
 	shapes: {
         // ----
         1: {
-            img: "",
+            img: null,
 			/**
 			 * 添加一个本类型的方块
 			 * @returns {boolean} 如果游戏结束，返回true
@@ -34,11 +34,12 @@ var Tetris = {
 					type: 1,
 					points: [[[5, 0], [5, -1], [5, -2], [5, -3]]]
 				};
+                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
+                this.indexer.reset();
 				return false;
             },
             indexer: null,
 			getRelativeCoordinate: function() {
-                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -86,7 +87,7 @@ var Tetris = {
         },
 		// |__
 		2: {
-			img: "",
+			img: null,
 			add: function() {
 				if ((Tetris.boxes[4][0] + Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -95,11 +96,12 @@ var Tetris = {
 					type: 2,
 					points: [[[4, 0], [4, -1]], [[5, 0]], [[6, 0]]]
 				};
+                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
+                this.indexer.reset();
 				return false;
 			},
             indexer: null,
             getRelativeCoordinate: function() {
-                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -172,7 +174,7 @@ var Tetris = {
 		},
 		// __|
 		3: {
-			img: "",
+			img: null,
 			add: function() {
 				if ((Tetris.boxes[4][0] + Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -181,11 +183,12 @@ var Tetris = {
 					type: 3,
 					points: [[[4, 0]], [[5, 0]], [[6, 0], [6, -1]]]
 				};
+                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
+                this.indexer.reset();
 				return false;
 			},
             indexer: null,
             getRelativeCoordinate: function() {
-                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -258,7 +261,7 @@ var Tetris = {
 		},
 		//田
 		4: {
-			img: "",
+			img: null,
 			add: function() {
 				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -273,7 +276,7 @@ var Tetris = {
 		//    __
 		// __|
 		5: {
-			img: "",
+			img: null,
 			add: function() {
 				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -282,11 +285,12 @@ var Tetris = {
 					type: 5,
 					points: [[[5, 0]], [[6, 0], [6, -1]], [[7, -1]]]
 				};
+                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
+                this.indexer.reset();
 				return false;
 			},
             indexer: null,
             getRelativeCoordinate: function() {
-                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -327,7 +331,7 @@ var Tetris = {
 		},
 		//土
 		6: {
-			img: "",
+			img: null,
 			add: function() {
 				if ((Tetris.boxes[4, 0] + Tetris.boxes[5, 0] + Tetris.boxes[6, 0]) > 0)
 					return true;
@@ -336,11 +340,12 @@ var Tetris = {
 					type: 6,
 					points: [[[4, 0]], [[5, 0], [5, -1]], [[6, 0]]]
 				};
+                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
+                this.indexer.reset();
 				return false;
 			}, 
             indexer: null,
             getRelativeCoordinate: function() {
-                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -417,7 +422,7 @@ var Tetris = {
 		//  --
  		//   |__
 		7: {
-			img: "",
+			img: null,
 			add: function() {
 				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -426,11 +431,12 @@ var Tetris = {
 					type: 7,
 					points: [[[4, -1]], [[5, 0], [5, -1]], [[6, 0]]]
 				};
+                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
+                this.indexer.reset();
 				return false;
 			},
             indexer: null,
             getRelativeCoordinate: function() {
-                if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -482,11 +488,11 @@ var Tetris = {
 	 */
 	start: function() {
 		//初始化形状对象
-		/*for (var i = 1;i < 8;i ++) {
+		for (var i = 1;i < 8;i ++) {
 			var img = new Image();
-			img.src = i + ".png";
-			shapes[i] = img;
-		}*/
+			img.src = "images/" + i + ".png";
+			Tetris.shapes[i].img = img;
+		}
 		//初始化方格二维数组
 		var arr;
 		for (var i = 0;i < Tetris.boxNum.cols;i ++) {
@@ -544,8 +550,7 @@ var Tetris = {
 			for (var j =  0;j < Tetris.boxNum.rows;j ++) {
 				var n;
 				if ((n = Tetris.boxes[i][j]) > 0) {
-					//brush.drawImage(shapes[n], 0, 0);
-					Tetris.brush.fillRect(i * Tetris.boxSize, j * Tetris.boxSize, Tetris.boxSize, Tetris.boxSize);
+                    Tetris.brush.drawImage(Tetris.shapes[n].img, i * Tetris.boxSize, j * Tetris.boxSize);
 				} else {
 					Tetris.brush.clearRect(i * Tetris.boxSize, j * Tetris.boxSize, Tetris.boxSize, Tetris.boxSize);
 				}
@@ -762,6 +767,9 @@ var Tetris = {
                 },
                 decrease: function() {
                     index = index == 0 ? types - 1 : (--index);
+                },
+                reset: function() {
+                    index = 0;
                 }
             };
         },
