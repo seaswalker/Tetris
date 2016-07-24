@@ -38,3 +38,7 @@
 .level {
 	height: 30%;
 }
+#next-img {
+    display: block;
+    margin: 80px auto 0px;
+}

@@ -9,6 +9,8 @@ var Tetris = {
 	//当前活动的方块，存储其类型以及坐标
 	//坐标为一个三维数组，第二维为按列划分，第三维即坐标点
 	currentBlock: null,
+    //下一个方块的类型
+    nextType: 0,
 	//画笔
 	brush: null,
 	//每个方格的大小
@@ -17,10 +19,17 @@ var Tetris = {
 		rows: 20,
 		cols: 10
 	},
+    //dom对象缓存
+    cache: {
+        nextImage: null  
+    },
 	shapes: {
         // ----
         1: {
-            img: null,
+            //方格图片对象
+            box: null,
+            //方块图片路径
+            block: "images/blocks/1.png",
 			/**
 			 * 添加一个本类型的方块
 			 * @returns {boolean} 如果游戏结束，返回true
@@ -87,7 +96,8 @@ var Tetris = {
         },
 		// |__
 		2: {
-			img: null,
+			box: null,
+            block: "images/blocks/2.png",
 			add: function() {
 				if ((Tetris.boxes[4][0] + Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -174,7 +184,8 @@ var Tetris = {
 		},
 		// __|
 		3: {
-			img: null,
+			box: null,
+            block: "images/blocks/3.png",
 			add: function() {
 				if ((Tetris.boxes[4][0] + Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -261,7 +272,8 @@ var Tetris = {
 		},
 		//田
 		4: {
-			img: null,
+			box: null,
+            block: "images/blocks/4.png",
 			add: function() {
 				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -276,7 +288,8 @@ var Tetris = {
 		//    __
 		// __|
 		5: {
-			img: null,
+			box: null,
+            block: "images/blocks/5.png",
 			add: function() {
 				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -331,7 +344,8 @@ var Tetris = {
 		},
 		//土
 		6: {
-			img: null,
+			box: null,
+            block: "images/blocks/6.png",
 			add: function() {
 				if ((Tetris.boxes[4, 0] + Tetris.boxes[5, 0] + Tetris.boxes[6, 0]) > 0)
 					return true;
@@ -422,7 +436,8 @@ var Tetris = {
 		//  --
  		//   |__
 		7: {
-			img: null,
+			box: null,
+            block: "images/blocks/7.png",
 			add: function() {
 				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
 					return true;
@@ -487,11 +502,14 @@ var Tetris = {
 	 * 6. 监听键盘事件
 	 */
 	start: function() {
+        //初始化缓存
+        Tetris.cache.nextImage = document.getElementById("next-img");
+        Tetris.nextType = Tetris.utils.getRandomInt(1, 8);
 		//初始化形状对象
 		for (var i = 1;i < 8;i ++) {
-			var img = new Image();
-			img.src = "images/" + i + ".png";
-			Tetris.shapes[i].img = img;
+			var box = new Image();
+			box.src = "images/" + i + ".png";
+			Tetris.shapes[i].box = box;
 		}
 		//初始化方格二维数组
 		var arr;
@@ -504,8 +522,6 @@ var Tetris = {
 		//初始化画笔对象
 		var canvas = document.getElementById("main-canvas");
 		Tetris.brush = canvas.getContext("2d");
-		//TODO 删除
-		Tetris.brush.fillStyle="#FF0000";
 		//生成一个方块
 		Tetris.addBlock();
 		Tetris.refresh(true);
@@ -550,7 +566,7 @@ var Tetris = {
 			for (var j =  0;j < Tetris.boxNum.rows;j ++) {
 				var n;
 				if ((n = Tetris.boxes[i][j]) > 0) {
-                    Tetris.brush.drawImage(Tetris.shapes[n].img, i * Tetris.boxSize, j * Tetris.boxSize);
+                    Tetris.brush.drawImage(Tetris.shapes[n].box, i * Tetris.boxSize, j * Tetris.boxSize);
 				} else {
 					Tetris.brush.clearRect(i * Tetris.boxSize, j * Tetris.boxSize, Tetris.boxSize, Tetris.boxSize);
 				}
@@ -710,18 +726,18 @@ var Tetris = {
 
 	},
     addBlock: function() {
-		var type = Tetris.utils.getRandomInt(1, 8);
-		var next = Tetris.utils.getRandomInt(1, 8);
-		Tetris.setNextBlock(next);
-		if (Tetris.shapes[type].add())
+		if (Tetris.shapes[Tetris.nextType].add())
 			Tetris.gameOver();
+        else
+            Tetris.setNextBlock(Tetris.utils.getRandomInt(1, 8));
 	},
-	/**
-	 * 绘制下一个方块示意图
-	 * @param type 方块类型
-	 */
-    setNextBlock: function(type) {
-        
+    /**
+     * [[绘制下一个方块示意图]]
+     * @param {[[Integer]]} next [[下一个方块的类型]]
+     */
+    setNextBlock: function(next) {
+        Tetris.nextType = next;
+        Tetris.cache.nextImage.src = Tetris.shapes[next].block;
     },
 	/**
 	 * 游戏结束
