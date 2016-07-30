@@ -4,7 +4,7 @@ window.onload = function() {
 
 var Tetris = {
 	//默认2000ms刷新一次
-	refreshInterval: 2000,
+	refreshInterval: 500,
 	currentIntervalID: -1,
 	//当前活动的方块，存储其类型以及坐标
 	//坐标为一个三维数组，第二维为按列划分，第三维即坐标点
@@ -21,7 +21,10 @@ var Tetris = {
 	},
     //dom对象缓存
     cache: {
-        nextImage: null  
+        nextImage: null,
+        level: null,
+        currentPoint: 0,
+        neededPoints: 0
     },
 	shapes: {
         // ----
@@ -494,6 +497,14 @@ var Tetris = {
 	boxes: [],
     //消行音效
     soundEffect: new Audio("sounds/collision.mp3"),
+    //当前获得的分数
+    points: 0,
+    //当前级别的满分
+    currentLevelPoints: 100,
+    //当前的级别
+    currentLevel: 1,
+    //分数索引
+    pointSequencer: null,
 	/**
 	 * 开始游戏:
 	 * 1. 初始化方块图片对象
@@ -506,6 +517,9 @@ var Tetris = {
 	start: function() {
         //初始化缓存
         Tetris.cache.nextImage = document.getElementById("next-img");
+        Tetris.cache.level = document.getElementById("level-content");
+        Tetris.cache.currentPoints = document.getElementById("current-point");
+        Tetris.cache.neededPoints = document.getElementById("needed-point");
         Tetris.nextType = Tetris.utils.getRandomInt(1, 8);
 		//初始化形状对象
 		for (var i = 1;i < 8;i ++) {
@@ -524,6 +538,8 @@ var Tetris = {
 		//初始化画笔对象
 		var canvas = document.getElementById("main-canvas");
 		Tetris.brush = canvas.getContext("2d");
+        Tetris.pointSequencer = Tetris.utils.fibonacciSequencer;
+        Tetris.pointSequencer.next();
 		//生成一个方块
 		Tetris.addBlock();
 		Tetris.refresh(true);
@@ -590,7 +606,7 @@ var Tetris = {
 			p = points[i][0];
             if (p[1] > maxY) maxY = p[1];
 			if ((n = p[1] + 1) >= rows || Tetris.boxes[p[0]][n] > 0) {
-                Tetris.removeLines(maxY + 1);
+                Tetris.removeLines(maxY);
 				Tetris.addBlock();
 				return;
 			}
@@ -778,7 +794,21 @@ var Tetris = {
      * @param {Number} ps 增长的分数
      */
     refreshPoints: function(ps) {
-        
+        Tetris.points += ps;
+        if (Tetris.points >= Tetris.currentLevelPoints) {
+            Tetris.currentLevel++;
+            Tetris.currentLevelPoints = Tetris.pointSequencer.next() * 100;
+            Tetris.refreshLevel();
+        }
+        Tetris.cache.currentPoints.innerHTML = Tetris.points;
+        Tetris.cache.neededPoints.innerHTML = Tetris.currentLevelPoints - Tetris.points;
+    },
+    /**
+     * 刷新level
+     */
+    refreshLevel: function() {
+        Tetris.cache.level.innerHTML = Tetris.currentLevel;
+        Tetris.utils.resetThread();
     },
 	/**
 	 * 暂停
@@ -823,10 +853,12 @@ var Tetris = {
 		 * [[逐级提高游戏速度]]
 		 */
 		resetThread: function() {
-			clearInterval(Tetris.currentIntervalID);
-			//简单的每次速度加倍
-			Tetris.refreshInterval /= 2;
-			Tetris.currentIntervalID = setInterval(Tetris.refresh, Tetris.refreshInterval);
+            if (Tetris.refreshInterval > 300) {
+                clearInterval(Tetris.currentIntervalID);
+                //刷新间隔每次减少200ms，直到400ms不在改变
+                Tetris.refreshInterval -= 200;
+                Tetris.currentIntervalID = setInterval(Tetris.refresh, Tetris.refreshInterval);
+            }
 		},
         /**
          * [[为方块的变形建立索引]]
@@ -861,6 +893,32 @@ var Tetris = {
          */
         checkCurrent: function() {
             return Tetris.currentBlock === null;
-        }
+        },
+        /**
+         * 返回以类斐波那契数列递增的序列
+         * (第二个数字为2，而不是1)
+         * @returns {Object}   索引对象
+         */
+        fibonacciSequencer: (function() {
+            var arr = [0, 1];
+            return {
+                /**
+                 * 返回下一个数字
+                 */
+                next: function() {
+                    var result = arr[0] + arr[1];
+                    arr[0] = arr[1];
+                    arr[1] = result;
+                    return result;
+                },
+                /**
+                 * 重置索引对象，重新从1开始
+                 */
+                reset: function() {
+                    arr[0] = 0;
+                    arr[1] = 1;
+                }
+            };
+        })()
     }
 };
