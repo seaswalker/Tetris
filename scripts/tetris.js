@@ -492,6 +492,8 @@ var Tetris = {
     },
 	//坐标地图
 	boxes: [],
+    //消行音效
+    soundEffect: new Audio("sounds/collision.mp3"),
 	/**
 	 * 开始游戏:
 	 * 1. 初始化方块图片对象
@@ -576,17 +578,19 @@ var Tetris = {
 	/**
 	 * 将当前的活动方块下移一行
 	 */
-	moveCurrentPoints: function (lines) {
+	moveCurrentPoints: function () {
         if (Tetris.utils.checkCurrent()) {
             Tetris.addBlock();
             return;
         }
 		//逐列检查第一个box下方是否有box
 		var points = Tetris.currentBlock.points, i, j, cols, p, n, rows = Tetris.boxNum.rows,
-			type = Tetris.currentBlock.type;
+			type = +Tetris.currentBlock.type, maxY = 0;
 		for (i = 0, cols = points.length; i < cols; i++) {
 			p = points[i][0];
+            if (p[1] > maxY) maxY = p[1];
 			if ((n = p[1] + 1) >= rows || Tetris.boxes[p[0]][n] > 0) {
+                Tetris.removeLines(maxY + 1);
 				Tetris.addBlock();
 				return;
 			}
@@ -598,7 +602,7 @@ var Tetris = {
 				p = points[i][j];
 				a = p[1] + 1;
 				if (a >= 0)
-					Tetris.boxes[p[0]][a] = +type;
+					Tetris.boxes[p[0]][a] = type;
 				if (a > 0)
 					Tetris.boxes[p[0]][p[1]] = 0;
 				p[1] = a;
@@ -648,12 +652,13 @@ var Tetris = {
 	 * 向下加速掉落
 	 */
 	faster: function () {
-		var points = Tetris.currentBlock.points,
+		var points = Tetris.currentBlock.points, maxY = 0,
 			cols = points.length, i, j, l, p, deep, minDepth = 20, rows = Tetris.boxNum.rows, type = +Tetris.currentBlock.type;
 		//寻找每一列可以下落的最小值
 		for (i = 0; i < cols; i++) {
 			//每一列的第一行坐标
 			p = points[i][0];
+            if (p[1] > maxY) maxY = p[1];
 			deep = p[1] + 1;
 			while (deep < rows && Tetris.boxes[p[0]][deep] === 0)
 				++deep;
@@ -672,6 +677,7 @@ var Tetris = {
 		}
         Tetris.currentBlock = null;
 		Tetris.refresh(true);
+        Tetris.removeLines(maxY + minDepth);
 	},
 	/**
 	 * 方块变形
@@ -725,15 +731,19 @@ var Tetris = {
      */
     removeLines: function(offset) {
         var i, j, ps = 0, cols = Tetris.boxNum.cols;
-        for (i = offset; i >= 0; i--) {
+        A:for (i = offset; i >= 0; i--) {
             for (j = 0; j < cols; j++) {
-                if (Tetris.boxes[j][i] === 0) break;
+                if (Tetris.boxes[j][i] === 0) continue A;
             }
-            if (j === cols - 1) ps += 10;
+            //此行已满，加分
+            if (j === cols) ps += 10;
         }
         var n = ps / 10;
-        Tetris.moveBlocks(offset - n, n);
-        Tetris.refreshPoints(ps);
+        if (n > 0) {
+            Tetris.moveBlocks(offset - n, n);
+            Tetris.playSound();
+            Tetris.refreshPoints(ps);
+        }
     },
     /**
      * 将方块下移指定行
@@ -741,11 +751,27 @@ var Tetris = {
      * @param {Number} lines  移动的行数
      */
     moveBlocks: function(offset, lines) {
-        var i, j = offset + 1, l = offset + lines, cols = Tetris.boxNum.cols;
+        var i, j, l = offset + lines, cols = Tetris.boxNum.cols;
         //擦除被覆盖行
         for (i = 0; i < cols; i++) {
-            //TODO
+            for (j = offset + 1; j <= l; j++) {
+                Tetris.boxes[i][j] = 0;
+            }
         }
+        //下移
+        for (j = offset; j >= 0; j--) {
+            for (i = 0; i < cols; i++) {
+                Tetris.boxes[i][j + lines] = Tetris.boxes[i][j];
+                Tetris.boxes[i][j] = 0;
+            }
+        }
+    },
+    /**
+     * 播放碰撞音效
+     */
+    playSound: function() {
+        Tetris.soundEffect.loop = false;
+        Tetris.soundEffect.play();
     },
     /**
      * 刷新分数显示
