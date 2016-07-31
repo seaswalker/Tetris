@@ -24,7 +24,11 @@ var Tetris = {
         nextImage: null,
         level: null,
         currentPoint: 0,
-        neededPoints: 0
+        neededPoints: 0,
+        //遮罩
+        mask: null,
+        //pause
+        pause: null
     },
 	shapes: {
         // ----
@@ -520,6 +524,8 @@ var Tetris = {
         Tetris.cache.level = document.getElementById("level-content");
         Tetris.cache.currentPoints = document.getElementById("current-point");
         Tetris.cache.neededPoints = document.getElementById("needed-point");
+        Tetris.cache.mask = document.getElementById("mask");
+        Tetris.cache.pause = document.getElementById("pause");
         Tetris.nextType = Tetris.utils.getRandomInt(1, 8);
 		//初始化形状对象
 		for (var i = 1;i < 8;i ++) {
@@ -544,7 +550,7 @@ var Tetris = {
 		Tetris.addBlock();
 		Tetris.refresh(true);
 		//启动重绘
-		Tetris.utils.resetThread();
+		Tetris.utils.setThread();
 		document.addEventListener("keydown", function(e) {
 			Tetris.handleKeyEvent(e.keyCode);
 		}, false);
@@ -569,7 +575,7 @@ var Tetris = {
 				Tetris.faster();
 				break;
 			case 80:
-				Tetris.pause();
+				Tetris.togglePause();
 				break;
 		}
 	},
@@ -808,13 +814,25 @@ var Tetris = {
      */
     refreshLevel: function() {
         Tetris.cache.level.innerHTML = Tetris.currentLevel;
-        Tetris.utils.resetThread();
+        Tetris.utils.setThread();
     },
 	/**
-	 * 暂停
+	 * 暂停/恢复
 	 */
-	pause: function () {
-
+	togglePause: function () {
+        if (Tetris.currentIntervalID < 0) {
+            //恢复
+            Tetris.cache.mask.style.display = "none";
+            Tetris.cache.pause.style.display = "none";
+            Tetris.utils.setThread(true);
+        } else {
+            //清除定时器
+            clearInterval(Tetris.currentIntervalID);
+            Tetris.cache.mask.style.display = "block";
+            Tetris.cache.pause.style.display = "block";
+            Tetris.currentIntervalID = -1;
+        }
+        
 	},
     addBlock: function() {
 		if (Tetris.shapes[Tetris.nextType].add())
@@ -850,10 +868,13 @@ var Tetris = {
             return Math.floor(Math.random() * (max - min)) + min;
         },
 		/**
-		 * [[逐级提高游戏速度]]
+		 * 重新设定定时器
+		 * @param Boolean isResume 如果为true，代表恢复执行，不需要重新设定间隔
 		 */
-		resetThread: function() {
-            if (Tetris.refreshInterval > 300) {
+		setThread: function(isResume) {
+            if (isResume === true) {
+                Tetris.currentIntervalID = setInterval(Tetris.refresh, Tetris.refreshInterval);
+            } else if (Tetris.refreshInterval > 300) {
                 clearInterval(Tetris.currentIntervalID);
                 //刷新间隔每次减少200ms，直到400ms不在改变
                 Tetris.refreshInterval -= 200;
