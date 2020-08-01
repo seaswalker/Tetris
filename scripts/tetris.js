@@ -1,24 +1,24 @@
-window.onload = function() {
+window.onload = function () {
     Tetris.start();
 };
 
 var Tetris = {
-	//默认1000ms刷新一次
-	refreshInterval: 1000,
-	currentIntervalID: -1,
-	//当前活动的方块，存储其类型以及坐标
-	//坐标为一个三维数组，第二维为按列划分，第三维即坐标点
-	currentBlock: null,
+    //默认1000ms刷新一次
+    refreshInterval: 1000,
+    currentIntervalID: -1,
+    //当前活动的方块，存储其类型以及坐标
+    //坐标为一个三维数组，第二维为按列划分，第三维即坐标点
+    currentBlock: null,
     //下一个方块的类型
     nextType: 0,
-	//画笔
-	brush: null,
-	//每个方格的大小
-	boxSize: 30,
-	boxNum: {
-		rows: 20,
-		cols: 10
-	},
+    //画笔
+    brush: null,
+    //每个方格的大小
+    boxSize: 30,
+    boxNum: {
+        rows: 20,
+        cols: 10
+    },
     //dom对象缓存
     cache: {
         nextImage: null,
@@ -30,7 +30,7 @@ var Tetris = {
         //pause
         pause: null
     },
-	shapes: {
+    shapes: {
         // ----
         1: {
             //方格图片对象
@@ -41,21 +41,21 @@ var Tetris = {
 			 * 添加一个本类型的方块
 			 * @returns {boolean} 如果游戏结束，返回true
 			 */
-            add: function() {
+            add: function () {
                 var col = Tetris.boxNum.cols / 2;
-				if (Tetris.boxes[col][0] > 0)
-					return true;
-				Tetris.boxes[col][0] = 1;
-				Tetris.currentBlock = {
-					type: 1,
-					points: [[[5, 0], [5, -1], [5, -2], [5, -3]]]
-				};
+                if (Tetris.boxes[col][0] > 0)
+                    return true;
+                Tetris.boxes[col][0] = 1;
+                Tetris.currentBlock = {
+                    type: 1,
+                    points: [[[5, 0], [5, -1], [5, -2], [5, -3]]]
+                };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 this.indexer.reset();
-				return false;
+                return false;
             },
             indexer: null,
-			getRelativeCoordinate: function() {
+            getRelativeCoordinate: function () {
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -79,7 +79,7 @@ var Tetris = {
                         /**
                          * 根据给定的第一列最下点的坐标生成新的活动方块坐标
                          */
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x - 2, y - 2]], [[x - 1, y - 2]], [[x, y - 2]], [[x + 1, y - 2]]];
                         },
                         decreaseIndex: null
@@ -92,7 +92,7 @@ var Tetris = {
                             before: [[0, 0], [1, 0], [3, 0]],
                             after: [[2, 2], [2, 1], [2, -1]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x + 2, y + 2], [x + 2, y + 1], [x + 2, y], [x + 2, y - 1]]];
                         },
                         decreaseIndex: null
@@ -101,24 +101,24 @@ var Tetris = {
                 return Tetris.utils.returnHelper.call(that, relativeCoordinates);
             }
         },
-		// |__
-		2: {
-			box: null,
+        // |__
+        2: {
+            box: null,
             block: "images/blocks/2.png",
-			add: function() {
-				if ((Tetris.boxes[4][0] + Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
-					return true;
-				Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 2;
-				Tetris.currentBlock = {
-					type: 2,
-					points: [[[4, 0], [4, -1]], [[5, 0]], [[6, 0]]]
-				};
+            add: function () {
+                if ((Tetris.boxes[4][0] + Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
+                    return true;
+                Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 2;
+                Tetris.currentBlock = {
+                    type: 2,
+                    points: [[[4, 0], [4, -1]], [[5, 0]], [[6, 0]]]
+                };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 this.indexer.reset();
-				return false;
-			},
+                return false;
+            },
             indexer: null,
-            getRelativeCoordinate: function() {
+            getRelativeCoordinate: function () {
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -129,7 +129,7 @@ var Tetris = {
                             before: [[0, 0], [0, -1], [2, 0]],
                             after: [[1, 1], [1, -1], [2, -1]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]], [[x + 2, y - 1]]];
                         },
                         decreaseIndex: null
@@ -148,7 +148,7 @@ var Tetris = {
                             before: [[0, 0], [0, -2], [1, -2]],
                             after: [[-1, -1], [1, -1], [1, 0]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x - 1, y - 1]], [[x, y - 1]], [[x + 1, y], [x + 1, y - 1]]];
                         },
                         decreaseIndex: null
@@ -161,7 +161,7 @@ var Tetris = {
                             before: [[0, 0], [2, 0], [2, 1]],
                             after: [[0, 1], [1, 1], [1, -1]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x, y + 1]], [[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]]];
                         },
                         decreaseIndex: null
@@ -180,7 +180,7 @@ var Tetris = {
                             before: [[0, 0], [1, 0], [1, -2]],
                             after: [[0, -2], [0, -1], [2, -1]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x, y - 1], [x, y - 2]], [[x + 1, y - 1]], [[x + 2, y - 1]]];
                         },
                         decreaseIndex: null
@@ -188,25 +188,25 @@ var Tetris = {
                 ];
                 return Tetris.utils.returnHelper.call(that, relativeCoordinates);
             }
-		},
-		// __|
-		3: {
-			box: null,
+        },
+        // __|
+        3: {
+            box: null,
             block: "images/blocks/3.png",
-			add: function() {
-				if ((Tetris.boxes[4][0] + Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
-					return true;
-				Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 3;
-				Tetris.currentBlock = {
-					type: 3,
-					points: [[[4, 0]], [[5, 0]], [[6, 0], [6, -1]]]
-				};
+            add: function () {
+                if ((Tetris.boxes[4][0] + Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
+                    return true;
+                Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 3;
+                Tetris.currentBlock = {
+                    type: 3,
+                    points: [[[4, 0]], [[5, 0]], [[6, 0], [6, -1]]]
+                };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 this.indexer.reset();
-				return false;
-			},
+                return false;
+            },
             indexer: null,
-            getRelativeCoordinate: function() {
+            getRelativeCoordinate: function () {
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -217,7 +217,7 @@ var Tetris = {
                             before: [[0, 0], [2, 0], [2, -1]],
                             after: [[1, -1], [1, 1], [2, 1]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]], [[x + 2, y + 1]]];
                         },
                         decreaseIndex: null
@@ -236,7 +236,7 @@ var Tetris = {
                             before: [[0, 0], [1, 0], [0, -2]],
                             after: [[-1, 0], [-1, -1], [1, -1]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x - 1, y], [x - 1, y - 1]], [[x, y - 1]], [[x + 1, y - 1]]];
                         },
                         decreaseIndex: null
@@ -249,12 +249,12 @@ var Tetris = {
                             before: [[0, 0], [0, -1], [2, -1]],
                             after: [[0, -2], [1, -2], [1, 0]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x, y - 2]], [[x + 1, y], [x + 1, y - 1], [x + 1, y - 2]]];
                         },
                         decreaseIndex: null
                     },
-                     {
+                    {
                         collisionDetection: {
                             collision: [
                                 {
@@ -268,7 +268,7 @@ var Tetris = {
                             before: [[0, 0], [1, 0], [1, 2]],
                             after: [[0, 1], [2, 1], [2, 0]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x, y + 1]], [[x + 1, y + 1]], [[x + 2, y + 1], [x + 2, y]]];
                         },
                         decreaseIndex: null
@@ -276,41 +276,41 @@ var Tetris = {
                 ];
                 return Tetris.utils.returnHelper.call(that, relativeCoordinates);
             }
-		},
-		//田
-		4: {
-			box: null,
+        },
+        //田
+        4: {
+            box: null,
             block: "images/blocks/4.png",
-			add: function() {
-				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
-					return true;
-				Tetris.boxes[5][0] = Tetris.boxes[6][0] = 4;
-				Tetris.currentBlock = {
-					type: 4,
-					points: [[[5, 0], [5, -1]], [[6, 0], [6, -1]]]
-				};
-				return false;
-			}
-		},
-		//    __
-		// __|
-		5: {
-			box: null,
+            add: function () {
+                if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
+                    return true;
+                Tetris.boxes[5][0] = Tetris.boxes[6][0] = 4;
+                Tetris.currentBlock = {
+                    type: 4,
+                    points: [[[5, 0], [5, -1]], [[6, 0], [6, -1]]]
+                };
+                return false;
+            }
+        },
+        //    __
+        // __|
+        5: {
+            box: null,
             block: "images/blocks/5.png",
-			add: function() {
-				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
-					return true;
-				Tetris.boxes[5][0] = Tetris.boxes[6][0] = 5;
-				Tetris.currentBlock = {
-					type: 5,
-					points: [[[5, 0]], [[6, 0], [6, -1]], [[7, -1]]]
-				};
+            add: function () {
+                if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
+                    return true;
+                Tetris.boxes[5][0] = Tetris.boxes[6][0] = 5;
+                Tetris.currentBlock = {
+                    type: 5,
+                    points: [[[5, 0]], [[6, 0], [6, -1]], [[7, -1]]]
+                };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 this.indexer.reset();
-				return false;
-			},
+                return false;
+            },
             indexer: null,
-            getRelativeCoordinate: function() {
+            getRelativeCoordinate: function () {
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -321,7 +321,7 @@ var Tetris = {
                             before: [[0, 0], [2, -1]],
                             after: [[0, -1], [0, -2]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x, y - 1], [x, y - 2]], [[x + 1, y], [x + 1, y - 1]]];
                         },
                         decreaseIndex: null
@@ -340,7 +340,7 @@ var Tetris = {
                             before: [[0, 0], [0, -1]],
                             after: [[0, 1], [2, 0]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x, y + 1]], [[x + 1, y + 1], [x + 1, y]], [[x + 2, y]]];
                         },
                         decreaseIndex: null
@@ -348,25 +348,25 @@ var Tetris = {
                 ];
                 return Tetris.utils.returnHelper.call(that, relativeCoordinates);
             }
-		},
-		//土
-		6: {
-			box: null,
+        },
+        //土
+        6: {
+            box: null,
             block: "images/blocks/6.png",
-			add: function() {
-				if ((Tetris.boxes[4, 0] + Tetris.boxes[5, 0] + Tetris.boxes[6, 0]) > 0)
-					return true;
-				Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 6;
-				Tetris.currentBlock = {
-					type: 6,
-					points: [[[4, 0]], [[5, 0], [5, -1]], [[6, 0]]]
-				};
+            add: function () {
+                if ((Tetris.boxes[4, 0] + Tetris.boxes[5, 0] + Tetris.boxes[6, 0]) > 0)
+                    return true;
+                Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 6;
+                Tetris.currentBlock = {
+                    type: 6,
+                    points: [[[4, 0]], [[5, 0], [5, -1]], [[6, 0]]]
+                };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 this.indexer.reset();
-				return false;
-			}, 
+                return false;
+            },
             indexer: null,
-            getRelativeCoordinate: function() {
+            getRelativeCoordinate: function () {
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -380,7 +380,7 @@ var Tetris = {
                         /**
                          * 根据给定的第一列最下点的坐标生成新的活动方块坐标
                          */
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]], [[x + 2, y]]];
                         },
                         decreaseIndex: null
@@ -398,8 +398,8 @@ var Tetris = {
                         changedCoordinates: {
                             before: [[0, -2]],
                             after: [[-1, -1]]
-                        }, 
-                        rebuildCurrentPoints: function(x, y) {
+                        },
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x - 1, y - 1]], [[x, y], [x, y - 1]], [[x + 1, y - 1]]];
                         },
                         decreaseIndex: null
@@ -412,7 +412,7 @@ var Tetris = {
                             before: [[2, 0]],
                             after: [[1, -1]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x, y]], [[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]]];
                         },
                         decreaseIndex: null
@@ -431,7 +431,7 @@ var Tetris = {
                             before: [[1, 1]],
                             after: [[2, 0]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x, y]], [[x + 1, y], [x + 1, y - 1]], [[x + 2, y]]];
                         },
                         decreaseIndex: null
@@ -439,26 +439,26 @@ var Tetris = {
                 ];
                 return Tetris.utils.returnHelper.call(that, relativeCoordinates);
             }
-		},
-		//  --
- 		//   |__
-		7: {
-			box: null,
+        },
+        //  --
+        //   |__
+        7: {
+            box: null,
             block: "images/blocks/7.png",
-			add: function() {
-				if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
-					return true;
-				Tetris.boxes[5][0] = Tetris.boxes[6][0] = 7;
-				Tetris.currentBlock = {
-					type: 7,
-					points: [[[4, -1]], [[5, 0], [5, -1]], [[6, 0]]]
-				};
+            add: function () {
+                if ((Tetris.boxes[5][0] + Tetris.boxes[6][0]) > 0)
+                    return true;
+                Tetris.boxes[5][0] = Tetris.boxes[6][0] = 7;
+                Tetris.currentBlock = {
+                    type: 7,
+                    points: [[[4, -1]], [[5, 0], [5, -1]], [[6, 0]]]
+                };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 this.indexer.reset();
-				return false;
-			},
+                return false;
+            },
             indexer: null,
-            getRelativeCoordinate: function() {
+            getRelativeCoordinate: function () {
                 var that = this;
                 var relativeCoordinates = [
                     {
@@ -469,7 +469,7 @@ var Tetris = {
                             before: [[0, 0], [2, 1]],
                             after: [[2, 0], [2, -1]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x + 1, y + 1], [x + 1, y]], [[x + 2, y], [x + 2, y - 1]]];
                         },
                         decreaseIndex: null
@@ -488,17 +488,17 @@ var Tetris = {
                             before: [[1, -1], [1, -2]],
                             after: [[-1, -1], [1, 0]]
                         },
-                        rebuildCurrentPoints: function(x, y) {
+                        rebuildCurrentPoints: function (x, y) {
                             return [[[x - 1, y - 1]], [[x, y], [x, y - 1]], [[x + 1, y]]];
                         }
                     }
                 ];
                 return Tetris.utils.returnHelper.call(that, relativeCoordinates);
             }
-		}
+        }
     },
-	//坐标地图
-	boxes: [],
+    //坐标地图
+    boxes: [],
     //消行音效
     soundEffect: new Audio("sounds/collision.mp3"),
     //当前获得的分数
@@ -518,7 +518,7 @@ var Tetris = {
 	 * 5. 启动重绘
 	 * 6. 监听键盘事件
 	 */
-	start: function() {
+    start: function () {
         //初始化缓存
         Tetris.cache.nextImage = document.getElementById("next-img");
         Tetris.cache.level = document.getElementById("level-content");
@@ -527,119 +527,119 @@ var Tetris = {
         Tetris.cache.mask = document.getElementById("mask");
         Tetris.cache.pause = document.getElementById("pause");
         Tetris.nextType = Tetris.utils.getRandomInt(1, 8);
-		//初始化形状对象
-		for (var i = 1;i < 8;i ++) {
-			var box = new Image();
-			box.src = "images/" + i + ".png";
-			Tetris.shapes[i].box = box;
-		}
-		//初始化方格二维数组
-		var arr;
-		for (var i = 0;i < Tetris.boxNum.cols;i ++) {
-			arr = Tetris.boxes[i] = [];
-			for (var j = 0;j < Tetris.boxNum.rows;j++) {
-				arr[j] = 0;
-			}
-		}
-		//初始化画笔对象
-		var canvas = document.getElementById("main-canvas");
-		Tetris.brush = canvas.getContext("2d");
+        //初始化形状对象
+        for (var i = 1; i < 8; i++) {
+            var box = new Image();
+            box.src = "images/" + i + ".png";
+            Tetris.shapes[i].box = box;
+        }
+        //初始化方格二维数组
+        var arr;
+        for (var i = 0; i < Tetris.boxNum.cols; i++) {
+            arr = Tetris.boxes[i] = [];
+            for (var j = 0; j < Tetris.boxNum.rows; j++) {
+                arr[j] = 0;
+            }
+        }
+        //初始化画笔对象
+        var canvas = document.getElementById("main-canvas");
+        Tetris.brush = canvas.getContext("2d");
         Tetris.pointSequencer = Tetris.utils.fibonacciSequencer;
         Tetris.pointSequencer.next();
-		//生成一个方块
-		Tetris.addBlock();
-		Tetris.refresh(true);
-		//启动重绘
-		Tetris.utils.setThread();
-		document.addEventListener("keydown", function(e) {
-			Tetris.handleKeyEvent(e.keyCode);
-		}, false);
-	},
+        //生成一个方块
+        Tetris.addBlock();
+        Tetris.refresh(true);
+        //启动重绘
+        Tetris.utils.setThread();
+        document.addEventListener("keydown", function (e) {
+            Tetris.handleKeyEvent(e.keyCode);
+        }, false);
+    },
 	/**
 	 * 处理键盘按下时间
 	 * @param keyCode 键码
 	 */
-	handleKeyEvent: function (keyCode) {
+    handleKeyEvent: function (keyCode) {
         if (Tetris.utils.checkCurrent()) {
             return;
         }
 
-		switch (keyCode) {
-			case 37:
-				Tetris.moveLeft();
-				break;
-			case 38:
-				Tetris.transform();
-				break;
-			case 39:
-				Tetris.moveRight();
-				break;
-			case 40:
-				Tetris.faster();
-				break;
-			case 80:
-				Tetris.togglePause();
-				break;
-		}
-	},
+        switch (keyCode) {
+            case 37:
+                Tetris.moveLeft();
+                break;
+            case 38:
+                Tetris.transform();
+                break;
+            case 39:
+                Tetris.moveRight();
+                break;
+            case 40:
+                Tetris.faster();
+                break;
+            case 80:
+                Tetris.togglePause();
+                break;
+        }
+    },
 	/**
 	 * 刷新重绘
 	 * @param flag 如果为true，那么表示刚增加了方块，不需要移动
 	 */
-	refresh: function(flag) {
-		if (!flag)
-			Tetris.moveCurrentPoints();
-		for (var i = 0;i < Tetris.boxNum.cols;i ++) {
-			for (var j =  0;j < Tetris.boxNum.rows;j ++) {
-				var n;
-				if ((n = Tetris.boxes[i][j]) > 0) {
+    refresh: function (flag) {
+        if (!flag)
+            Tetris.moveCurrentPoints();
+        for (var i = 0; i < Tetris.boxNum.cols; i++) {
+            for (var j = 0; j < Tetris.boxNum.rows; j++) {
+                var n;
+                if ((n = Tetris.boxes[i][j]) > 0) {
                     Tetris.brush.drawImage(Tetris.shapes[n].box, i * Tetris.boxSize, j * Tetris.boxSize);
-				} else {
-					Tetris.brush.clearRect(i * Tetris.boxSize, j * Tetris.boxSize, Tetris.boxSize, Tetris.boxSize);
-				}
-			}
-		}
-	},
+                } else {
+                    Tetris.brush.clearRect(i * Tetris.boxSize, j * Tetris.boxSize, Tetris.boxSize, Tetris.boxSize);
+                }
+            }
+        }
+    },
 	/**
 	 * 将当前的活动方块下移一行
 	 */
-	moveCurrentPoints: function () {
+    moveCurrentPoints: function () {
         if (Tetris.utils.checkCurrent()) {
             Tetris.addBlock();
             return;
         }
-		//逐列检查第一个box下方是否有box
-		var points = Tetris.currentBlock.points, i, j, cols, p, n, rows = Tetris.boxNum.rows,
-			type = +Tetris.currentBlock.type, maxY = 0;
-		for (i = 0, cols = points.length; i < cols; i++) {
-			p = points[i][0];
+        //逐列检查第一个box下方是否有box
+        var points = Tetris.currentBlock.points, i, j, cols, p, n, rows = Tetris.boxNum.rows,
+            type = +Tetris.currentBlock.type, maxY = 0;
+        for (i = 0, cols = points.length; i < cols; i++) {
+            p = points[i][0];
             if (p[1] > maxY) maxY = p[1];
-			if ((n = p[1] + 1) >= rows || Tetris.boxes[p[0]][n] > 0) {
+            if ((n = p[1] + 1) >= rows || Tetris.boxes[p[0]][n] > 0) {
                 Tetris.removeLines(maxY);
-				Tetris.addBlock();
-				return;
-			}
-		}
-		//下移
-		var l, a;
-		for (i = 0, cols = points.length; i < cols; i++) {
-			for (j = 0, l = points[i].length; j < l; j++) {
-				p = points[i][j];
-				a = p[1] + 1;
-				if (a >= 0)
-					Tetris.boxes[p[0]][a] = type;
-				if (a > 0)
-					Tetris.boxes[p[0]][p[1]] = 0;
-				p[1] = a;
-			}
-		}
-	},
+                Tetris.addBlock();
+                return;
+            }
+        }
+        //下移
+        var l, a;
+        for (i = 0, cols = points.length; i < cols; i++) {
+            for (j = 0, l = points[i].length; j < l; j++) {
+                p = points[i][j];
+                a = p[1] + 1;
+                if (a >= 0)
+                    Tetris.boxes[p[0]][a] = type;
+                if (a > 0)
+                    Tetris.boxes[p[0]][p[1]] = 0;
+                p[1] = a;
+            }
+        }
+    },
 	/**
 	 * 处理左箭头按下事件，向左移动
 	 */
-	moveLeft: function () {
-		var points = Tetris.currentBlock.points;
-		if (points[0][0][0] === 0) {
+    moveLeft: function () {
+        var points = Tetris.currentBlock.points;
+        if (points[0][0][0] === 0) {
             return;
         }
 
@@ -652,25 +652,25 @@ var Tetris = {
             }
         }
 
-		var i, j, cols, l, p;
-		for (i = 0, cols = points.length; i < cols; i++) {
-			for (j = 0, l = points[i].length; j < l; j++) {
-				p = points[i][j];
-				Tetris.boxes[p[0] - 1][p[1]] = Tetris.boxes[p[0]][p[1]];
-				Tetris.boxes[p[0]][p[1]] = 0;
-				p[0]--;
-			}
+        var i, j, cols, l, p;
+        for (i = 0, cols = points.length; i < cols; i++) {
+            for (j = 0, l = points[i].length; j < l; j++) {
+                p = points[i][j];
+                Tetris.boxes[p[0] - 1][p[1]] = Tetris.boxes[p[0]][p[1]];
+                Tetris.boxes[p[0]][p[1]] = 0;
+                p[0]--;
+            }
         }
-        
+
         Tetris.refresh(true);
-	},
+    },
 	/**
 	 * 处理右箭头按下事件，向右移动
 	 */
-	moveRight: function() {
-		var points = Tetris.currentBlock.points, cols = points.length;
+    moveRight: function () {
+        var points = Tetris.currentBlock.points, cols = points.length;
         if (points[cols - 1][0][0] === Tetris.boxNum.cols - 1) return;
-        
+
         // 检测右边是否有方块存在，如果有不能移动
         var mostRightColumn = points[cols - 1];
         for (i = 0, l = mostRightColumn.length; i < l; i++) {
@@ -680,54 +680,54 @@ var Tetris = {
             }
         }
 
-		var i, j, l, p;
-		for (i = cols - 1; i >= 0; i--) {
-			for (j = 0, l = points[i].length; j < l; j++) {
-				p = points[i][j];
-				Tetris.boxes[p[0] + 1][p[1]] = Tetris.boxes[p[0]][p[1]];
-				Tetris.boxes[p[0]][p[1]] = 0;
-				p[0]++;
-			}
-		}
-		Tetris.refresh(true);
-	},
+        var i, j, l, p;
+        for (i = cols - 1; i >= 0; i--) {
+            for (j = 0, l = points[i].length; j < l; j++) {
+                p = points[i][j];
+                Tetris.boxes[p[0] + 1][p[1]] = Tetris.boxes[p[0]][p[1]];
+                Tetris.boxes[p[0]][p[1]] = 0;
+                p[0]++;
+            }
+        }
+        Tetris.refresh(true);
+    },
 	/**
 	 * 向下加速掉落
 	 */
-	faster: function () {
-		var points = Tetris.currentBlock.points, maxY = 0,
-			cols = points.length, i, j, l, p, deep, minDepth = 20, rows = Tetris.boxNum.rows, type = +Tetris.currentBlock.type;
-		//寻找每一列可以下落的最小值
-		for (i = 0; i < cols; i++) {
-			//每一列的第一行坐标
-			p = points[i][0];
+    faster: function () {
+        var points = Tetris.currentBlock.points, maxY = 0,
+            cols = points.length, i, j, l, p, deep, minDepth = 20, rows = Tetris.boxNum.rows, type = +Tetris.currentBlock.type;
+        //寻找每一列可以下落的最小值
+        for (i = 0; i < cols; i++) {
+            //每一列的第一行坐标
+            p = points[i][0];
             if (p[1] > maxY) maxY = p[1];
-			deep = p[1] + 1;
-			while (deep < rows && Tetris.boxes[p[0]][deep] === 0)
-				++deep;
-			deep -= (p[1] + 1);
-			minDepth = deep < minDepth ? deep : minDepth;
-		}
-		//向下移动minDepth个单位
-		if (minDepth === 20) return;
-		for (i = 0; i < cols; i++) {
-			for (j = 0, l = points[i].length; j < l; j++) {
-				p = points[i][j];
-				Tetris.boxes[p[0]][p[1] + minDepth] = type;
-				Tetris.boxes[p[0]][p[1]] = 0;
+            deep = p[1] + 1;
+            while (deep < rows && Tetris.boxes[p[0]][deep] === 0)
+                ++deep;
+            deep -= (p[1] + 1);
+            minDepth = deep < minDepth ? deep : minDepth;
+        }
+        //向下移动minDepth个单位
+        if (minDepth === 20) return;
+        for (i = 0; i < cols; i++) {
+            for (j = 0, l = points[i].length; j < l; j++) {
+                p = points[i][j];
+                Tetris.boxes[p[0]][p[1] + minDepth] = type;
+                Tetris.boxes[p[0]][p[1]] = 0;
                 p[1] += minDepth;
-			}
-		}
+            }
+        }
         Tetris.currentBlock = null;
-		Tetris.refresh(true);
+        Tetris.refresh(true);
         Tetris.removeLines(maxY + minDepth);
-	},
+    },
 	/**
 	 * 方块变形
 	 */
-	transform: function () {
-		var type = +Tetris.currentBlock.type;
-		if (type === 4) return;
+    transform: function () {
+        var type = +Tetris.currentBlock.type;
+        if (type === 4) return;
         var relativeCoordinate = Tetris.shapes[type].getRelativeCoordinate(), o,
             points = Tetris.currentBlock.points, p = points[0][0], x = p[0], y = p[1], i, l, p;
         //检测边缘
@@ -759,7 +759,7 @@ var Tetris = {
                 continue;
             }
 
-            if (Tetris.boxes[xChecked][yChecked]  > 0) {
+            if (Tetris.boxes[xChecked][yChecked] > 0) {
                 relativeCoordinate.decreaseIndex();
                 return;
             }
@@ -768,7 +768,7 @@ var Tetris = {
         o = relativeCoordinate.changedCoordinates;
         for (i = 0, l = o.before.length; i < l; i++) {
             p = o.after[i];
-            
+
             xNew = x + p[0];
             yNew = y + p[1];
             if (xNew >= 0 && yNew >= 0) {
@@ -780,13 +780,13 @@ var Tetris = {
         }
         //重建活动方块坐标
         Tetris.currentBlock.points = relativeCoordinate.rebuildCurrentPoints(x, y);
-		Tetris.refresh(true);
-	},
+        Tetris.refresh(true);
+    },
     /**
      * 检测满行，消除并计分
      * @param {Number} offset 检测的起始行数(倒序检测)
      */
-    removeLines: function(offset) {
+    removeLines: function (offset) {
         var i, j, ps = 0, cols = Tetris.boxNum.cols;
         A: for (i = offset; i >= 0; i--) {
             for (j = 0; j < cols; j++) {
@@ -807,7 +807,7 @@ var Tetris = {
      * @param {Number} offset 起始行(倒序)
      * @param {Number} lines  移动的行数
      */
-    moveBlocks: function(offset, lines) {
+    moveBlocks: function (offset, lines) {
         var i, j, l = offset + lines, cols = Tetris.boxNum.cols;
         //擦除被覆盖行
         for (i = 0; i < cols; i++) {
@@ -826,7 +826,7 @@ var Tetris = {
     /**
      * 播放碰撞音效
      */
-    playSound: function() {
+    playSound: function () {
         Tetris.soundEffect.loop = false;
         Tetris.soundEffect.play();
     },
@@ -834,7 +834,7 @@ var Tetris = {
      * 刷新分数显示
      * @param {Number} ps 增长的分数
      */
-    refreshPoints: function(ps) {
+    refreshPoints: function (ps) {
         Tetris.points += ps;
         if (Tetris.points >= Tetris.currentLevelPoints) {
             Tetris.currentLevel++;
@@ -847,14 +847,14 @@ var Tetris = {
     /**
      * 刷新level
      */
-    refreshLevel: function() {
+    refreshLevel: function () {
         Tetris.cache.level.innerHTML = Tetris.currentLevel;
         Tetris.utils.setThread();
     },
 	/**
 	 * 暂停/恢复
 	 */
-	togglePause: function () {
+    togglePause: function () {
         if (Tetris.currentIntervalID < 0) {
             //恢复
             Tetris.cache.mask.style.display = "none";
@@ -867,19 +867,19 @@ var Tetris = {
             Tetris.cache.pause.style.display = "block";
             Tetris.currentIntervalID = -1;
         }
-        
-	},
-    addBlock: function() {
-		if (Tetris.shapes[Tetris.nextType].add())
-			Tetris.gameOver();
+
+    },
+    addBlock: function () {
+        if (Tetris.shapes[Tetris.nextType].add())
+            Tetris.gameOver();
         else
             Tetris.setNextBlock(Tetris.utils.getRandomInt(1, 8));
-	},
+    },
     /**
      * [[绘制下一个方块示意图]]
      * @param {[[Number]]} next [[下一个方块的类型]]
      */
-    setNextBlock: function(next) {
+    setNextBlock: function (next) {
         Tetris.nextType = next;
         Tetris.cache.nextImage.src = Tetris.shapes[next].block;
     },
@@ -887,10 +887,10 @@ var Tetris = {
 	 * 游戏结束
 	 * TODO
 	 */
-	gameOver: function () {
+    gameOver: function () {
         clearInterval(Tetris.currentIntervalID);
         Tetris.currentBlock = null;
-	},
+    },
     //工具方法集合
     utils: {
 		/**
@@ -899,14 +899,14 @@ var Tetris = {
 		 * @param max 最大值
 		 * @returns {integer} 随机数
 		 */
-        getRandomInt: function(min, max) {
+        getRandomInt: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
         },
 		/**
 		 * 重新设定定时器
 		 * @param Boolean isResume 如果为true，代表恢复执行，不需要重新设定间隔
 		 */
-		setThread: function(isResume) {
+        setThread: function (isResume) {
             if (isResume === true) {
                 Tetris.currentIntervalID = setInterval(Tetris.refresh, Tetris.refreshInterval);
             } else if (Tetris.refreshInterval > 300) {
@@ -915,30 +915,30 @@ var Tetris = {
                 Tetris.refreshInterval -= 200;
                 Tetris.currentIntervalID = setInterval(Tetris.refresh, Tetris.refreshInterval);
             }
-		},
+        },
         /**
          * [[为方块的变形建立索引]]
          * @param   {[[Integer]]} types [[方块变形的种数]]
          * @returns {object}   [[索引对象]]
          */
-        newIndexer: function(types) {
+        newIndexer: function (types) {
             var index = 0;
             return {
-                next: function() {
+                next: function () {
                     var i = index;
                     index++;
                     index = index == types ? 0 : index;
                     return i;
                 },
-                decrease: function() {
+                decrease: function () {
                     index = index == 0 ? types - 1 : (--index);
                 },
-                reset: function() {
+                reset: function () {
                     index = 0;
                 }
             };
         },
-        returnHelper: function(relativeCoordinates) {
+        returnHelper: function (relativeCoordinates) {
             var t = relativeCoordinates[this.indexer.next()];
             t.decreaseIndex = this.indexer.decrease;
             return t;
@@ -947,7 +947,7 @@ var Tetris = {
          * [[检查当前是否有活动方块，如果没有，不允许进行左，右，下的移动以及变形]]
          * @returns {[[Boolean]]} [[没有返回true]]
          */
-        checkCurrent: function() {
+        checkCurrent: function () {
             return Tetris.currentBlock === null;
         },
         /**
@@ -955,13 +955,13 @@ var Tetris = {
          * (第二个数字为2，而不是1)
          * @returns {Object}   索引对象
          */
-        fibonacciSequencer: (function() {
+        fibonacciSequencer: (function () {
             var arr = [0, 1];
             return {
                 /**
                  * 返回下一个数字
                  */
-                next: function() {
+                next: function () {
                     var result = arr[0] + arr[1];
                     arr[0] = arr[1];
                     arr[1] = result;
@@ -970,7 +970,7 @@ var Tetris = {
                 /**
                  * 重置索引对象，重新从1开始
                  */
-                reset: function() {
+                reset: function () {
                     arr[0] = 0;
                     arr[1] = 1;
                 }
