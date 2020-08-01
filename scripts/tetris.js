@@ -608,29 +608,32 @@ var Tetris = {
             Tetris.addBlock();
             return;
         }
+
         //逐列检查第一个box下方是否有box
-        var points = Tetris.currentBlock.points, i, j, cols, p, n, rows = Tetris.boxNum.rows,
-            type = +Tetris.currentBlock.type, maxY = 0;
+        var points = Tetris.currentBlock.points, i, j, cols, p, n, rows = Tetris.boxNum.rows, type = +Tetris.currentBlock.type, maxY = 0;
+        var canMove = true;
+
         for (i = 0, cols = points.length; i < cols; i++) {
             p = points[i][0];
             if (p[1] > maxY) maxY = p[1];
             if ((n = p[1] + 1) >= rows || Tetris.boxes[p[0]][n] > 0) {
-                Tetris.removeLines(maxY);
-                Tetris.addBlock();
-                return;
+                canMove = false;
             }
         }
+        
+        if (!canMove) {
+            Tetris.removeLines(maxY);
+            Tetris.addBlock();
+            return;
+        }
+
         //下移
-        var l, a;
         for (i = 0, cols = points.length; i < cols; i++) {
             for (j = 0, l = points[i].length; j < l; j++) {
                 p = points[i][j];
-                a = p[1] + 1;
-                if (a >= 0)
-                    Tetris.boxes[p[0]][a] = type;
-                if (a > 0)
-                    Tetris.boxes[p[0]][p[1]] = 0;
-                p[1] = a;
+                Tetris.boxes[p[0]][p[1] + 1] = type;
+                Tetris.boxes[p[0]][p[1]] = 0;
+                p[1]++;
             }
         }
     },
@@ -707,9 +710,15 @@ var Tetris = {
                 ++deep;
             deep -= (p[1] + 1);
             minDepth = deep < minDepth ? deep : minDepth;
+            if (deep == 0) {
+                // 说明当前列无法向下移动，所以0就是最小值，没有必要再判断后面的列
+                break;
+            }
         }
-        //向下移动minDepth个单位
-        if (minDepth === 20) return;
+
+        // minDepth为零的场景是定时器刚把方块移动到不能再次移动的位置，这里就不做任何操作了，等定时器下次调用刷新、清行即可
+        if (minDepth === 0) return;
+       
         for (i = 0; i < cols; i++) {
             for (j = 0, l = points[i].length; j < l; j++) {
                 p = points[i][j];
@@ -718,9 +727,10 @@ var Tetris = {
                 p[1] += minDepth;
             }
         }
+
         Tetris.currentBlock = null;
-        Tetris.refresh(true);
         Tetris.removeLines(maxY + minDepth);
+        Tetris.refresh(true);
     },
 	/**
 	 * 方块变形
@@ -883,13 +893,10 @@ var Tetris = {
         Tetris.nextType = next;
         Tetris.cache.nextImage.src = Tetris.shapes[next].block;
     },
-	/**
-	 * 游戏结束
-	 * TODO
-	 */
     gameOver: function () {
         clearInterval(Tetris.currentIntervalID);
         Tetris.currentBlock = null;
+        Tips.showError("Ops! Game over");
     },
     //工具方法集合
     utils: {
