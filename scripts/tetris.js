@@ -3,8 +3,8 @@ window.onload = function() {
 };
 
 var Tetris = {
-	//默认2000ms刷新一次
-	refreshInterval: 500,
+	//默认1000ms刷新一次
+	refreshInterval: 1000,
 	currentIntervalID: -1,
 	//当前活动的方块，存储其类型以及坐标
 	//坐标为一个三维数组，第二维为按列划分，第三维即坐标点
@@ -537,7 +537,7 @@ var Tetris = {
 		var arr;
 		for (var i = 0;i < Tetris.boxNum.cols;i ++) {
 			arr = Tetris.boxes[i] = [];
-			for (var j =  0;j < Tetris.boxNum.rows;j ++) {
+			for (var j = 0;j < Tetris.boxNum.rows;j++) {
 				arr[j] = 0;
 			}
 		}
@@ -730,7 +730,15 @@ var Tetris = {
         o = relativeCoordinate.collisionDetection.coordinates;
         for (i = 0, l = o.length; i < l; i++) {
             p = o[i];
-            if (Tetris.boxes[x + p[0]][y + p[1]]  > 0) {
+
+            xChecked = x + p[0];
+            yChecked = y + p[1];
+
+            if (xChecked < 0 || yChecked < 0) {
+                continue;
+            }
+
+            if (Tetris.boxes[xChecked][yChecked]  > 0) {
                 relativeCoordinate.decreaseIndex();
                 return;
             }
@@ -739,7 +747,13 @@ var Tetris = {
         o = relativeCoordinate.changedCoordinates;
         for (i = 0, l = o.before.length; i < l; i++) {
             p = o.after[i];
-            Tetris.boxes[x + p[0]][y + p[1]] = type;
+            
+            xNew = x + p[0];
+            yNew = y + p[1];
+            if (xNew >= 0 && yNew >= 0) {
+                Tetris.boxes[xNew][yNew] = type;
+            }
+
             p = o.before[i];
             Tetris.boxes[x + p[0]][y + p[1]] = 0;
         }
