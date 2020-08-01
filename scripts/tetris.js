@@ -560,7 +560,10 @@ var Tetris = {
 	 * @param keyCode 键码
 	 */
 	handleKeyEvent: function (keyCode) {
-        if (Tetris.utils.checkCurrent()) return;
+        if (Tetris.utils.checkCurrent()) {
+            return;
+        }
+
 		switch (keyCode) {
 			case 37:
 				Tetris.moveLeft();
@@ -636,35 +639,53 @@ var Tetris = {
 	 */
 	moveLeft: function () {
 		var points = Tetris.currentBlock.points;
-		if (points[0][0][0] === 0) return;
+		if (points[0][0][0] === 0) {
+            return;
+        }
+
+        // 检测左边是否有方块，如果有，不能移动
+        var mostLeftColumn = points[0];
+        for (i = 0, l = mostLeftColumn.length; i < l; i++) {
+            point = mostLeftColumn[i];
+            if (Tetris.boxes[point[0] - 1][point[1]] > 0) {
+                return;
+            }
+        }
+
 		var i, j, cols, l, p;
 		for (i = 0, cols = points.length; i < cols; i++) {
 			for (j = 0, l = points[i].length; j < l; j++) {
 				p = points[i][j];
-				if (p[1] >= 0) {
-					Tetris.boxes[p[0] - 1][p[1]] = Tetris.boxes[p[0]][p[1]];
-					Tetris.boxes[p[0]][p[1]] = 0;
-				}
+				Tetris.boxes[p[0] - 1][p[1]] = Tetris.boxes[p[0]][p[1]];
+				Tetris.boxes[p[0]][p[1]] = 0;
 				p[0]--;
 			}
-		}
-		Tetris.refresh(true);
+        }
+        
+        Tetris.refresh(true);
 	},
 	/**
 	 * 处理右箭头按下事件，向右移动
 	 */
 	moveRight: function() {
-		var points = Tetris.currentBlock.points,
-			cols = points.length;
-		if (points[cols - 1][0][0] === Tetris.boxNum.cols - 1) return;
+		var points = Tetris.currentBlock.points, cols = points.length;
+        if (points[cols - 1][0][0] === Tetris.boxNum.cols - 1) return;
+        
+        // 检测右边是否有方块存在，如果有不能移动
+        var mostRightColumn = points[cols - 1];
+        for (i = 0, l = mostRightColumn.length; i < l; i++) {
+            point = mostRightColumn[i];
+            if (Tetris.boxes[point[0] + 1][point[1]] > 0) {
+                return;
+            }
+        }
+
 		var i, j, l, p;
 		for (i = cols - 1; i >= 0; i--) {
 			for (j = 0, l = points[i].length; j < l; j++) {
 				p = points[i][j];
-				if (p[1] >= 0) {
-					Tetris.boxes[p[0] + 1][p[1]] = Tetris.boxes[p[0]][p[1]];
-					Tetris.boxes[p[0]][p[1]] = 0;
-				}
+				Tetris.boxes[p[0] + 1][p[1]] = Tetris.boxes[p[0]][p[1]];
+				Tetris.boxes[p[0]][p[1]] = 0;
 				p[0]++;
 			}
 		}
@@ -767,7 +788,7 @@ var Tetris = {
      */
     removeLines: function(offset) {
         var i, j, ps = 0, cols = Tetris.boxNum.cols;
-        A:for (i = offset; i >= 0; i--) {
+        A: for (i = offset; i >= 0; i--) {
             for (j = 0; j < cols; j++) {
                 if (Tetris.boxes[j][i] === 0) continue A;
             }
