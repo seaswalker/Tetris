@@ -38,10 +38,10 @@ var Tetris = {
             box: null,
             //方块图片路径
             block: "images/blocks/1.png",
-			/**
-			 * 添加一个本类型的方块
-			 * @returns {boolean} 如果游戏结束，返回true
-			 */
+            /**
+             * 添加一个本类型的方块
+             * @returns {boolean} 如果游戏结束，返回true
+             */
             add: function () {
                 var col = Tetris.boxNum.cols / 2;
                 if (Tetris.boxes[col][0] > 0)
@@ -49,7 +49,14 @@ var Tetris = {
                 Tetris.boxes[col][0] = 1;
                 Tetris.currentBlock = {
                     type: 1,
-                    points: [[[5, 0], [5, -1], [5, -2], [5, -3]]]
+                    points: [
+                        [
+                            [5, 0],
+                            [5, -1],
+                            [5, -2],
+                            [5, -3]
+                        ]
+                    ]
                 };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 this.indexer.reset();
@@ -58,11 +65,9 @@ var Tetris = {
             indexer: null,
             getRelativeCoordinate: function () {
                 var that = this;
-                var relativeCoordinates = [
-                    {
+                var relativeCoordinates = [{
                         collisionDetection: {
-                            collision: [
-                                {
+                            collision: [{
                                     isLeft: true,
                                     distance: -2
                                 },
@@ -71,30 +76,74 @@ var Tetris = {
                                     distance: 1
                                 }
                             ],
-                            coordinates: [[-2, -2], [-1, -2], [1, -2]]
+                            coordinates: [
+                                [-2, -2],
+                                [-1, -2],
+                                [1, -2]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [0, -1], [0, -3]],
-                            after: [[-2, -2], [-1, -2], [1, -2]]
+                            before: [
+                                [0, 0],
+                                [0, -1],
+                                [0, -3]
+                            ],
+                            after: [
+                                [-2, -2],
+                                [-1, -2],
+                                [1, -2]
+                            ]
                         },
                         /**
                          * 根据给定的第一列最下点的坐标生成新的活动方块坐标
                          */
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x - 2, y - 2]], [[x - 1, y - 2]], [[x, y - 2]], [[x + 1, y - 2]]];
+                            return [
+                                [
+                                    [x - 2, y - 2]
+                                ],
+                                [
+                                    [x - 1, y - 2]
+                                ],
+                                [
+                                    [x, y - 2]
+                                ],
+                                [
+                                    [x + 1, y - 2]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     },
                     {
                         collisionDetection: {
-                            coordinates: [[2, 2], [2, 1], [2, -1]]
+                            coordinates: [
+                                [2, 2],
+                                [2, 1],
+                                [2, -1]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [1, 0], [3, 0]],
-                            after: [[2, 2], [2, 1], [2, -1]]
+                            before: [
+                                [0, 0],
+                                [1, 0],
+                                [3, 0]
+                            ],
+                            after: [
+                                [2, 2],
+                                [2, 1],
+                                [2, -1]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x + 2, y + 2], [x + 2, y + 1], [x + 2, y], [x + 2, y - 1]]];
+                            return [
+                                [
+                                    [x + 2, y + 2],
+                                    [x + 2, y + 1],
+                                    [x + 2, y],
+                                    [x + 2, y - 1]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     }
@@ -112,7 +161,18 @@ var Tetris = {
                 Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 2;
                 Tetris.currentBlock = {
                     type: 2,
-                    points: [[[4, 0], [4, -1]], [[5, 0]], [[6, 0]]]
+                    points: [
+                        [
+                            [4, 0],
+                            [4, -1]
+                        ],
+                        [
+                            [5, 0]
+                        ],
+                        [
+                            [6, 0]
+                        ]
+                    ]
                 };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 this.indexer.reset();
@@ -121,68 +181,151 @@ var Tetris = {
             indexer: null,
             getRelativeCoordinate: function () {
                 var that = this;
-                var relativeCoordinates = [
-                    {
+                var relativeCoordinates = [{
                         collisionDetection: {
-                            coordinates: [[1, 1], [1, -1], [2, -1]]
+                            coordinates: [
+                                [1, 1],
+                                [1, -1],
+                                [2, -1]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [0, -1], [2, 0]],
-                            after: [[1, 1], [1, -1], [2, -1]]
-                        },
-                        rebuildCurrentPoints: function (x, y) {
-                            return [[[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]], [[x + 2, y - 1]]];
-                        },
-                        decreaseIndex: null
-                    },
-                    {
-                        collisionDetection: {
-                            collision: [
-                                {
-                                    isLeft: true,
-                                    distance: -1
-                                }
+                            before: [
+                                [0, 0],
+                                [0, -1],
+                                [2, 0]
                             ],
-                            coordinates: [[-1, -1], [1, -1], [1, 0]]
-                        },
-                        changedCoordinates: {
-                            before: [[0, 0], [0, -2], [1, -2]],
-                            after: [[-1, -1], [1, -1], [1, 0]]
+                            after: [
+                                [1, 1],
+                                [1, -1],
+                                [2, -1]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x - 1, y - 1]], [[x, y - 1]], [[x + 1, y], [x + 1, y - 1]]];
+                            return [
+                                [
+                                    [x + 1, y + 1],
+                                    [x + 1, y],
+                                    [x + 1, y - 1]
+                                ],
+                                [
+                                    [x + 2, y - 1]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     },
                     {
                         collisionDetection: {
-                            coordinates: [[0, 1], [1, 1], [1, -1]]
+                            collision: [{
+                                isLeft: true,
+                                distance: -1
+                            }],
+                            coordinates: [
+                                [-1, -1],
+                                [1, -1],
+                                [1, 0]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [2, 0], [2, 1]],
-                            after: [[0, 1], [1, 1], [1, -1]]
-                        },
-                        rebuildCurrentPoints: function (x, y) {
-                            return [[[x, y + 1]], [[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]]];
-                        },
-                        decreaseIndex: null
-                    },
-                    {
-                        collisionDetection: {
-                            collision: [
-                                {
-                                    isLeft: false,
-                                    distance: 2
-                                }
+                            before: [
+                                [0, 0],
+                                [0, -2],
+                                [1, -2]
                             ],
-                            coordinates: [[0, -1], [0, -2], [2, -1]]
-                        },
-                        changedCoordinates: {
-                            before: [[0, 0], [1, 0], [1, -2]],
-                            after: [[0, -2], [0, -1], [2, -1]]
+                            after: [
+                                [-1, -1],
+                                [1, -1],
+                                [1, 0]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x, y - 1], [x, y - 2]], [[x + 1, y - 1]], [[x + 2, y - 1]]];
+                            return [
+                                [
+                                    [x - 1, y - 1]
+                                ],
+                                [
+                                    [x, y - 1]
+                                ],
+                                [
+                                    [x + 1, y],
+                                    [x + 1, y - 1]
+                                ]
+                            ];
+                        },
+                        decreaseIndex: null
+                    },
+                    {
+                        collisionDetection: {
+                            coordinates: [
+                                [0, 1],
+                                [1, 1],
+                                [1, -1]
+                            ]
+                        },
+                        changedCoordinates: {
+                            before: [
+                                [0, 0],
+                                [2, 0],
+                                [2, 1]
+                            ],
+                            after: [
+                                [0, 1],
+                                [1, 1],
+                                [1, -1]
+                            ]
+                        },
+                        rebuildCurrentPoints: function (x, y) {
+                            return [
+                                [
+                                    [x, y + 1]
+                                ],
+                                [
+                                    [x + 1, y + 1],
+                                    [x + 1, y],
+                                    [x + 1, y - 1]
+                                ]
+                            ];
+                        },
+                        decreaseIndex: null
+                    },
+                    {
+                        collisionDetection: {
+                            collision: [{
+                                isLeft: false,
+                                distance: 2
+                            }],
+                            coordinates: [
+                                [0, -1],
+                                [0, -2],
+                                [2, -1]
+                            ]
+                        },
+                        changedCoordinates: {
+                            before: [
+                                [0, 0],
+                                [1, 0],
+                                [1, -2]
+                            ],
+                            after: [
+                                [0, -2],
+                                [0, -1],
+                                [2, -1]
+                            ]
+                        },
+                        rebuildCurrentPoints: function (x, y) {
+                            return [
+                                [
+                                    [x, y - 1],
+                                    [x, y - 2]
+                                ],
+                                [
+                                    [x + 1, y - 1]
+                                ],
+                                [
+                                    [x + 2, y - 1]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     }
@@ -200,7 +343,18 @@ var Tetris = {
                 Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 3;
                 Tetris.currentBlock = {
                     type: 3,
-                    points: [[[4, 0]], [[5, 0]], [[6, 0], [6, -1]]]
+                    points: [
+                        [
+                            [4, 0]
+                        ],
+                        [
+                            [5, 0]
+                        ],
+                        [
+                            [6, 0],
+                            [6, -1]
+                        ]
+                    ]
                 };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 this.indexer.reset();
@@ -209,68 +363,151 @@ var Tetris = {
             indexer: null,
             getRelativeCoordinate: function () {
                 var that = this;
-                var relativeCoordinates = [
-                    {
+                var relativeCoordinates = [{
                         collisionDetection: {
-                            coordinates: [[1, -1], [1, 1], [2, 1]]
+                            coordinates: [
+                                [1, -1],
+                                [1, 1],
+                                [2, 1]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [2, 0], [2, -1]],
-                            after: [[1, -1], [1, 1], [2, 1]]
-                        },
-                        rebuildCurrentPoints: function (x, y) {
-                            return [[[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]], [[x + 2, y + 1]]];
-                        },
-                        decreaseIndex: null
-                    },
-                    {
-                        collisionDetection: {
-                            collision: [
-                                {
-                                    isLeft: true,
-                                    distance: -1
-                                }
+                            before: [
+                                [0, 0],
+                                [2, 0],
+                                [2, -1]
                             ],
-                            coordinates: [[-1, 0], [-1, -1], [1, -1]]
-                        },
-                        changedCoordinates: {
-                            before: [[0, 0], [1, 0], [0, -2]],
-                            after: [[-1, 0], [-1, -1], [1, -1]]
+                            after: [
+                                [1, -1],
+                                [1, 1],
+                                [2, 1]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x - 1, y], [x - 1, y - 1]], [[x, y - 1]], [[x + 1, y - 1]]];
+                            return [
+                                [
+                                    [x + 1, y + 1],
+                                    [x + 1, y],
+                                    [x + 1, y - 1]
+                                ],
+                                [
+                                    [x + 2, y + 1]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     },
                     {
                         collisionDetection: {
-                            coordinates: [[0, -2], [1, -2], [1, 0]]
+                            collision: [{
+                                isLeft: true,
+                                distance: -1
+                            }],
+                            coordinates: [
+                                [-1, 0],
+                                [-1, -1],
+                                [1, -1]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [0, -1], [2, -1]],
-                            after: [[0, -2], [1, -2], [1, 0]]
-                        },
-                        rebuildCurrentPoints: function (x, y) {
-                            return [[[x, y - 2]], [[x + 1, y], [x + 1, y - 1], [x + 1, y - 2]]];
-                        },
-                        decreaseIndex: null
-                    },
-                    {
-                        collisionDetection: {
-                            collision: [
-                                {
-                                    isLeft: false,
-                                    distance: 2
-                                }
+                            before: [
+                                [0, 0],
+                                [1, 0],
+                                [0, -2]
                             ],
-                            coordinates: [[0, 1], [2, 1], [2, 0]]
-                        },
-                        changedCoordinates: {
-                            before: [[0, 0], [1, 0], [1, 2]],
-                            after: [[0, 1], [2, 1], [2, 0]]
+                            after: [
+                                [-1, 0],
+                                [-1, -1],
+                                [1, -1]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x, y + 1]], [[x + 1, y + 1]], [[x + 2, y + 1], [x + 2, y]]];
+                            return [
+                                [
+                                    [x - 1, y],
+                                    [x - 1, y - 1]
+                                ],
+                                [
+                                    [x, y - 1]
+                                ],
+                                [
+                                    [x + 1, y - 1]
+                                ]
+                            ];
+                        },
+                        decreaseIndex: null
+                    },
+                    {
+                        collisionDetection: {
+                            coordinates: [
+                                [0, -2],
+                                [1, -2],
+                                [1, 0]
+                            ]
+                        },
+                        changedCoordinates: {
+                            before: [
+                                [0, 0],
+                                [0, -1],
+                                [2, -1]
+                            ],
+                            after: [
+                                [0, -2],
+                                [1, -2],
+                                [1, 0]
+                            ]
+                        },
+                        rebuildCurrentPoints: function (x, y) {
+                            return [
+                                [
+                                    [x, y - 2]
+                                ],
+                                [
+                                    [x + 1, y],
+                                    [x + 1, y - 1],
+                                    [x + 1, y - 2]
+                                ]
+                            ];
+                        },
+                        decreaseIndex: null
+                    },
+                    {
+                        collisionDetection: {
+                            collision: [{
+                                isLeft: false,
+                                distance: 2
+                            }],
+                            coordinates: [
+                                [0, 1],
+                                [2, 1],
+                                [2, 0]
+                            ]
+                        },
+                        changedCoordinates: {
+                            before: [
+                                [0, 0],
+                                [1, 0],
+                                [1, 2]
+                            ],
+                            after: [
+                                [0, 1],
+                                [2, 1],
+                                [2, 0]
+                            ]
+                        },
+                        rebuildCurrentPoints: function (x, y) {
+                            return [
+                                [
+                                    [x, y + 1]
+                                ],
+                                [
+                                    [x + 1, y + 1]
+                                ],
+                                [
+                                    [x + 2, y + 1],
+                                    [x + 2, y]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     }
@@ -288,7 +525,16 @@ var Tetris = {
                 Tetris.boxes[5][0] = Tetris.boxes[6][0] = 4;
                 Tetris.currentBlock = {
                     type: 4,
-                    points: [[[5, 0], [5, -1]], [[6, 0], [6, -1]]]
+                    points: [
+                        [
+                            [5, 0],
+                            [5, -1]
+                        ],
+                        [
+                            [6, 0],
+                            [6, -1]
+                        ]
+                    ]
                 };
                 return false;
             }
@@ -304,7 +550,18 @@ var Tetris = {
                 Tetris.boxes[5][0] = Tetris.boxes[6][0] = 5;
                 Tetris.currentBlock = {
                     type: 5,
-                    points: [[[5, 0]], [[6, 0], [6, -1]], [[7, -1]]]
+                    points: [
+                        [
+                            [5, 0]
+                        ],
+                        [
+                            [6, 0],
+                            [6, -1]
+                        ],
+                        [
+                            [7, -1]
+                        ]
+                    ]
                 };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 this.indexer.reset();
@@ -313,36 +570,71 @@ var Tetris = {
             indexer: null,
             getRelativeCoordinate: function () {
                 var that = this;
-                var relativeCoordinates = [
-                    {
+                var relativeCoordinates = [{
                         collisionDetection: {
-                            coordinates: [[0, -1], [0, -2]]
+                            coordinates: [
+                                [0, -1],
+                                [0, -2]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [2, -1]],
-                            after: [[0, -1], [0, -2]]
+                            before: [
+                                [0, 0],
+                                [2, -1]
+                            ],
+                            after: [
+                                [0, -1],
+                                [0, -2]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x, y - 1], [x, y - 2]], [[x + 1, y], [x + 1, y - 1]]];
+                            return [
+                                [
+                                    [x, y - 1],
+                                    [x, y - 2]
+                                ],
+                                [
+                                    [x + 1, y],
+                                    [x + 1, y - 1]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     },
                     {
                         collisionDetection: {
-                            collision: [
-                                {
-                                    isLeft: false,
-                                    distance: 2
-                                }
-                            ],
-                            coordinates: [[0, 1], [2, 0]]
+                            collision: [{
+                                isLeft: false,
+                                distance: 2
+                            }],
+                            coordinates: [
+                                [0, 1],
+                                [2, 0]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [0, -1]],
-                            after: [[0, 1], [2, 0]]
+                            before: [
+                                [0, 0],
+                                [0, -1]
+                            ],
+                            after: [
+                                [0, 1],
+                                [2, 0]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x, y + 1]], [[x + 1, y + 1], [x + 1, y]], [[x + 2, y]]];
+                            return [
+                                [
+                                    [x, y + 1]
+                                ],
+                                [
+                                    [x + 1, y + 1],
+                                    [x + 1, y]
+                                ],
+                                [
+                                    [x + 2, y]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     }
@@ -360,7 +652,18 @@ var Tetris = {
                 Tetris.boxes[4][0] = Tetris.boxes[5][0] = Tetris.boxes[6][0] = 6;
                 Tetris.currentBlock = {
                     type: 6,
-                    points: [[[4, 0]], [[5, 0], [5, -1]], [[6, 0]]]
+                    points: [
+                        [
+                            [4, 0]
+                        ],
+                        [
+                            [5, 0],
+                            [5, -1]
+                        ],
+                        [
+                            [6, 0]
+                        ]
+                    ]
                 };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(4);
                 this.indexer.reset();
@@ -369,71 +672,130 @@ var Tetris = {
             indexer: null,
             getRelativeCoordinate: function () {
                 var that = this;
-                var relativeCoordinates = [
-                    {
+                var relativeCoordinates = [{
                         collisionDetection: {
-                            coordinates: [[1, 1]]
+                            coordinates: [
+                                [1, 1]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0]],
-                            after: [[1, 1]]
+                            before: [
+                                [0, 0]
+                            ],
+                            after: [
+                                [1, 1]
+                            ]
                         },
                         /**
                          * 根据给定的第一列最下点的坐标生成新的活动方块坐标
                          */
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]], [[x + 2, y]]];
+                            return [
+                                [
+                                    [x + 1, y + 1],
+                                    [x + 1, y],
+                                    [x + 1, y - 1]
+                                ],
+                                [
+                                    [x + 2, y]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     },
                     {
                         collisionDetection: {
-                            collision: [
-                                {
-                                    isLeft: true,
-                                    distance: -1
-                                }
+                            collision: [{
+                                isLeft: true,
+                                distance: -1
+                            }],
+                            coordinates: [
+                                [-1, -1]
+                            ]
+                        },
+                        changedCoordinates: {
+                            before: [
+                                [0, -2]
                             ],
-                            coordinates: [[-1, -1]]
-                        },
-                        changedCoordinates: {
-                            before: [[0, -2]],
-                            after: [[-1, -1]]
+                            after: [
+                                [-1, -1]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x - 1, y - 1]], [[x, y], [x, y - 1]], [[x + 1, y - 1]]];
+                            return [
+                                [
+                                    [x - 1, y - 1]
+                                ],
+                                [
+                                    [x, y],
+                                    [x, y - 1]
+                                ],
+                                [
+                                    [x + 1, y - 1]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     },
                     {
                         collisionDetection: {
-                            coordinates: [[1, -1]]
+                            coordinates: [
+                                [1, -1]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[2, 0]],
-                            after: [[1, -1]]
-                        },
-                        rebuildCurrentPoints: function (x, y) {
-                            return [[[x, y]], [[x + 1, y + 1], [x + 1, y], [x + 1, y - 1]]];
-                        },
-                        decreaseIndex: null
-                    },
-                    {
-                        collisionDetection: {
-                            collision: [
-                                {
-                                    isLeft: false,
-                                    distance: 2
-                                }
+                            before: [
+                                [2, 0]
                             ],
-                            coordinates: [[2, 0]]
-                        },
-                        changedCoordinates: {
-                            before: [[1, 1]],
-                            after: [[2, 0]]
+                            after: [
+                                [1, -1]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x, y]], [[x + 1, y], [x + 1, y - 1]], [[x + 2, y]]];
+                            return [
+                                [
+                                    [x, y]
+                                ],
+                                [
+                                    [x + 1, y + 1],
+                                    [x + 1, y],
+                                    [x + 1, y - 1]
+                                ]
+                            ];
+                        },
+                        decreaseIndex: null
+                    },
+                    {
+                        collisionDetection: {
+                            collision: [{
+                                isLeft: false,
+                                distance: 2
+                            }],
+                            coordinates: [
+                                [2, 0]
+                            ]
+                        },
+                        changedCoordinates: {
+                            before: [
+                                [1, 1]
+                            ],
+                            after: [
+                                [2, 0]
+                            ]
+                        },
+                        rebuildCurrentPoints: function (x, y) {
+                            return [
+                                [
+                                    [x, y]
+                                ],
+                                [
+                                    [x + 1, y],
+                                    [x + 1, y - 1]
+                                ],
+                                [
+                                    [x + 2, y]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     }
@@ -452,7 +814,18 @@ var Tetris = {
                 Tetris.boxes[5][0] = Tetris.boxes[6][0] = 7;
                 Tetris.currentBlock = {
                     type: 7,
-                    points: [[[4, -1]], [[5, 0], [5, -1]], [[6, 0]]]
+                    points: [
+                        [
+                            [4, -1]
+                        ],
+                        [
+                            [5, 0],
+                            [5, -1]
+                        ],
+                        [
+                            [6, 0]
+                        ]
+                    ]
                 };
                 if (!this.indexer) this.indexer = Tetris.utils.newIndexer(2);
                 this.indexer.reset();
@@ -461,36 +834,71 @@ var Tetris = {
             indexer: null,
             getRelativeCoordinate: function () {
                 var that = this;
-                var relativeCoordinates = [
-                    {
+                var relativeCoordinates = [{
                         collisionDetection: {
-                            coordinates: [[2, 0], [2, -1]]
+                            coordinates: [
+                                [2, 0],
+                                [2, -1]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[0, 0], [2, 1]],
-                            after: [[2, 0], [2, -1]]
+                            before: [
+                                [0, 0],
+                                [2, 1]
+                            ],
+                            after: [
+                                [2, 0],
+                                [2, -1]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x + 1, y + 1], [x + 1, y]], [[x + 2, y], [x + 2, y - 1]]];
+                            return [
+                                [
+                                    [x + 1, y + 1],
+                                    [x + 1, y]
+                                ],
+                                [
+                                    [x + 2, y],
+                                    [x + 2, y - 1]
+                                ]
+                            ];
                         },
                         decreaseIndex: null
                     },
                     {
                         collisionDetection: {
-                            collision: [
-                                {
-                                    isLeft: true,
-                                    distance: -1
-                                }
-                            ],
-                            coordinates: [[-1, -1], [1, 0]]
+                            collision: [{
+                                isLeft: true,
+                                distance: -1
+                            }],
+                            coordinates: [
+                                [-1, -1],
+                                [1, 0]
+                            ]
                         },
                         changedCoordinates: {
-                            before: [[1, -1], [1, -2]],
-                            after: [[-1, -1], [1, 0]]
+                            before: [
+                                [1, -1],
+                                [1, -2]
+                            ],
+                            after: [
+                                [-1, -1],
+                                [1, 0]
+                            ]
                         },
                         rebuildCurrentPoints: function (x, y) {
-                            return [[[x - 1, y - 1]], [[x, y], [x, y - 1]], [[x + 1, y]]];
+                            return [
+                                [
+                                    [x - 1, y - 1]
+                                ],
+                                [
+                                    [x, y],
+                                    [x, y - 1]
+                                ],
+                                [
+                                    [x + 1, y]
+                                ]
+                            ];
                         }
                     }
                 ];
@@ -510,15 +918,15 @@ var Tetris = {
     currentLevel: 1,
     //分数索引
     pointSequencer: null,
-	/**
-	 * 开始游戏:
-	 * 1. 初始化方块图片对象
-	 * 2. 初始化方格二维数组
-	 * 3. 初始化画笔对象
-	 * 4. 生成一个方块
-	 * 5. 启动重绘
-	 * 6. 监听键盘事件
-	 */
+    /**
+     * 开始游戏:
+     * 1. 初始化方块图片对象
+     * 2. 初始化方格二维数组
+     * 3. 初始化画笔对象
+     * 4. 生成一个方块
+     * 5. 启动重绘
+     * 6. 监听键盘事件
+     */
     start: function () {
         //初始化缓存
         Tetris.cache.nextImage = document.getElementById("next-img");
@@ -556,10 +964,10 @@ var Tetris = {
             Tetris.handleKeyEvent(e.keyCode);
         }, false);
     },
-	/**
-	 * 处理键盘按下时间
-	 * @param keyCode 键码
-	 */
+    /**
+     * 处理键盘按下时间
+     * @param keyCode 键码
+     */
     handleKeyEvent: function (keyCode) {
         if (Tetris.utils.checkCurrent() || (Tetris.currentIntervalID == -1) && keyCode != 80) {
             return;
@@ -583,10 +991,10 @@ var Tetris = {
                 break;
         }
     },
-	/**
-	 * 刷新重绘
-	 * @param flag 如果为true，那么表示刚增加了方块，不需要移动
-	 */
+    /**
+     * 刷新重绘
+     * @param flag 如果为true，那么表示刚增加了方块，不需要移动
+     */
     refresh: function (flag) {
         if (!flag)
             Tetris.moveCurrentPoints();
@@ -601,9 +1009,9 @@ var Tetris = {
             }
         }
     },
-	/**
-	 * 将当前的活动方块下移一行
-	 */
+    /**
+     * 将当前的活动方块下移一行
+     */
     moveCurrentPoints: function () {
         if (Tetris.utils.checkCurrent()) {
             Tetris.addBlock();
@@ -611,7 +1019,10 @@ var Tetris = {
         }
 
         //逐列检查第一个box下方是否有box
-        var points = Tetris.currentBlock.points, p, n, rows = Tetris.boxNum.rows, type = +Tetris.currentBlock.type, maxY = 0;
+        var points = Tetris.currentBlock.points,
+            p, n, rows = Tetris.boxNum.rows,
+            type = +Tetris.currentBlock.type,
+            maxY = 0;
         var canMove = true;
 
         for (var i = 0, cols = points.length; i < cols; i++) {
@@ -621,7 +1032,7 @@ var Tetris = {
                 canMove = false;
             }
         }
-        
+
         if (!canMove) {
             Tetris.removeLines(maxY);
             Tetris.addBlock();
@@ -638,9 +1049,9 @@ var Tetris = {
             }
         }
     },
-	/**
-	 * 处理左箭头按下事件，向左移动
-	 */
+    /**
+     * 处理左箭头按下事件，向左移动
+     */
     moveLeft: function () {
         var points = Tetris.currentBlock.points;
         if (points[0][0][0] === 0) {
@@ -667,11 +1078,12 @@ var Tetris = {
 
         Tetris.refresh(true);
     },
-	/**
-	 * 处理右箭头按下事件，向右移动
-	 */
+    /**
+     * 处理右箭头按下事件，向右移动
+     */
     moveRight: function () {
-        var points = Tetris.currentBlock.points, cols = points.length;
+        var points = Tetris.currentBlock.points,
+            cols = points.length;
         if (points[cols - 1][0][0] === Tetris.boxNum.cols - 1) return;
 
         // 检测右边是否有方块存在，如果有不能移动
@@ -693,12 +1105,16 @@ var Tetris = {
         }
         Tetris.refresh(true);
     },
-	/**
-	 * 向下加速掉落
-	 */
+    /**
+     * 向下加速掉落
+     */
     faster: function () {
-        var points = Tetris.currentBlock.points, maxY = 0,
-            cols = points.length, p, deep, minDepth = 20, rows = Tetris.boxNum.rows, type = +Tetris.currentBlock.type;
+        var points = Tetris.currentBlock.points,
+            maxY = 0,
+            cols = points.length,
+            p, deep, minDepth = 20,
+            rows = Tetris.boxNum.rows,
+            type = +Tetris.currentBlock.type;
         //寻找每一列可以下落的最小值
         for (var i = 0; i < cols; i++) {
             //每一列的第一行坐标
@@ -717,7 +1133,7 @@ var Tetris = {
 
         // minDepth为零的场景是定时器刚把方块移动到不能再次移动的位置，这里就不做任何操作了，等定时器下次调用刷新、清行即可
         if (minDepth === 0) return;
-       
+
         for (var i = 0; i < cols; i++) {
             for (var j = 0, l = points[i].length; j < l; j++) {
                 p = points[i][j];
@@ -731,14 +1147,18 @@ var Tetris = {
         Tetris.removeLines(maxY + minDepth);
         Tetris.refresh(true);
     },
-	/**
-	 * 方块变形
-	 */
+    /**
+     * 方块变形
+     */
     transform: function () {
         var type = +Tetris.currentBlock.type;
         if (type === 4) return;
-        var relativeCoordinate = Tetris.shapes[type].getRelativeCoordinate(), o,
-            points = Tetris.currentBlock.points, p = points[0][0], x = p[0], y = p[1];
+        var relativeCoordinate = Tetris.shapes[type].getRelativeCoordinate(),
+            o,
+            points = Tetris.currentBlock.points,
+            p = points[0][0],
+            x = p[0],
+            y = p[1];
         //检测边缘
         if (o = relativeCoordinate.collisionDetection.collision) {
             for (var i = 0, l = o.length; i < l; i++) {
@@ -796,7 +1216,8 @@ var Tetris = {
      * @param {Number} offset 检测的起始行数(倒序检测)
      */
     removeLines: function (offset) {
-        var ps = 0, cols = Tetris.boxNum.cols;
+        var ps = 0,
+            cols = Tetris.boxNum.cols;
         var lastHighBound = -1;
         var blocksMovementOffsets = [];
 
@@ -813,7 +1234,7 @@ var Tetris = {
                     continue A;
                 }
             }
-            
+
             //此行已满，加分
             if (j === cols) {
                 ps += Tetris.pointsPerLine;
@@ -865,12 +1286,12 @@ var Tetris = {
      * 把(low, high]之间的块下移lines行.
      */
     doMoveBlocks: function (low, high, lines) {
-       // 下移
-       for (var i = 0, cols = Tetris.boxNum.cols; i < cols; i++) {
-           for (var j = high; j > low; j--) {
-               Tetris.boxes[i][j + lines] = Tetris.boxes[i][j];
-               Tetris.boxes[i][j] = 0;
-           }
+        // 下移
+        for (var i = 0, cols = Tetris.boxNum.cols; i < cols; i++) {
+            for (var j = high; j > low; j--) {
+                Tetris.boxes[i][j + lines] = Tetris.boxes[i][j];
+                Tetris.boxes[i][j] = 0;
+            }
         }
         console.log("把(" + low + ", " + high + "]之间的块下移了" + lines + "行");
     },
@@ -902,9 +1323,9 @@ var Tetris = {
         Tetris.cache.level.innerHTML = Tetris.currentLevel;
         Tetris.utils.setThread();
     },
-	/**
-	 * 暂停/恢复
-	 */
+    /**
+     * 暂停/恢复
+     */
     togglePause: function () {
         if (Tetris.currentIntervalID < 0) {
             //恢复
@@ -941,19 +1362,19 @@ var Tetris = {
     },
     //工具方法集合
     utils: {
-		/**
-		 * 生成一个[min, max)之间的整数
-		 * @param min 最小值
-		 * @param max 最大值
-		 * @returns {integer} 随机数
-		 */
+        /**
+         * 生成一个[min, max)之间的整数
+         * @param min 最小值
+         * @param max 最大值
+         * @returns {integer} 随机数
+         */
         getRandomInt: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
         },
-		/**
-		 * 重新设定定时器
-		 * @param Boolean isResume 如果为true，代表恢复执行，不需要重新设定间隔
-		 */
+        /**
+         * 重新设定定时器
+         * @param Boolean isResume 如果为true，代表恢复执行，不需要重新设定间隔
+         */
         setThread: function (isResume) {
             if (isResume === true) {
                 Tetris.currentIntervalID = setInterval(Tetris.refresh, Tetris.refreshInterval);
