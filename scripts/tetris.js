@@ -5,6 +5,8 @@ window.onload = function () {
 var Tetris = {
     //默认1000ms刷新一次
     refreshInterval: 1000,
+    minRefreshInterval: 400,
+    intervalDiffPerLevel: 200,
     currentIntervalID: -1,
     //当前活动的方块，存储其类型以及坐标
     //坐标为一个三维数组，第二维为按列划分，第三维即坐标点
@@ -1378,10 +1380,10 @@ var Tetris = {
         setThread: function (isResume) {
             if (isResume === true) {
                 Tetris.currentIntervalID = setInterval(Tetris.refresh, Tetris.refreshInterval);
-            } else if (Tetris.refreshInterval > 300) {
+            } else if (Tetris.refreshInterval > Tetris.minRefreshInterval) {
                 clearInterval(Tetris.currentIntervalID);
                 //刷新间隔每次减少200ms，直到400ms不在改变
-                Tetris.refreshInterval -= 200;
+                Tetris.refreshInterval -= Tetris.intervalDiffPerLevel;
                 Tetris.currentIntervalID = setInterval(Tetris.refresh, Tetris.refreshInterval);
             }
         },
