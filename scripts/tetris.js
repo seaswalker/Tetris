@@ -939,16 +939,15 @@ var Tetris = {
         Tetris.cache.pause = document.getElementById("pause");
         Tetris.nextType = Tetris.utils.getRandomInt(1, 8);
         //初始化形状对象
-        for (var i = 1; i < 8; i++) {
-            var box = new Image();
+        for (let i = 1; i < 8; i++) {
+            let box = new Image();
             box.src = "images/" + i + ".png";
             Tetris.shapes[i].box = box;
         }
         //初始化方格二维数组
-        var arr;
-        for (var i = 0; i < Tetris.boxNum.cols; i++) {
-            arr = Tetris.boxes[i] = [];
-            for (var j = 0; j < Tetris.boxNum.rows; j++) {
+        for (let i = 0; i < Tetris.boxNum.cols; i++) {
+            let arr = Tetris.boxes[i] = [];
+            for (let j = 0; j < Tetris.boxNum.rows; j++) {
                 arr[j] = 0;
             }
         }
@@ -1000,9 +999,9 @@ var Tetris = {
     refresh: function (flag) {
         if (!flag)
             Tetris.moveCurrentPoints();
-        for (var i = 0; i < Tetris.boxNum.cols; i++) {
-            for (var j = 0; j < Tetris.boxNum.rows; j++) {
-                var n;
+        for (let i = 0; i < Tetris.boxNum.cols; i++) {
+            for (let j = 0; j < Tetris.boxNum.rows; j++) {
+                let n;
                 if ((n = Tetris.boxes[i][j]) > 0) {
                     Tetris.brush.drawImage(Tetris.shapes[n].box, i * Tetris.boxSize, j * Tetris.boxSize);
                 } else {
@@ -1027,7 +1026,7 @@ var Tetris = {
             maxY = 0;
         var canMove = true;
 
-        for (var i = 0, cols = points.length; i < cols; i++) {
+        for (let i = 0, cols = points.length; i < cols; i++) {
             p = points[i][0];
             if (p[1] > maxY) maxY = p[1];
             if ((n = p[1] + 1) >= rows || Tetris.boxes[p[0]][n] > 0) {
@@ -1042,8 +1041,8 @@ var Tetris = {
         }
 
         //下移
-        for (var i = 0, cols = points.length; i < cols; i++) {
-            for (var j = 0, l = points[i].length; j < l; j++) {
+        for (let i = 0, cols = points.length; i < cols; i++) {
+            for (let j = 0, l = points[i].length; j < l; j++) {
                 p = points[i][j];
                 Tetris.boxes[p[0]][p[1] + 1] = type;
                 Tetris.boxes[p[0]][p[1]] = 0;
@@ -1062,16 +1061,16 @@ var Tetris = {
 
         // 检测左边是否有方块，如果有，不能移动
         var mostLeftColumn = points[0];
-        for (var i = 0, l = mostLeftColumn.length; i < l; i++) {
-            var point = mostLeftColumn[i];
+        for (let i = 0, l = mostLeftColumn.length; i < l; i++) {
+            let point = mostLeftColumn[i];
             if (Tetris.boxes[point[0] - 1][point[1]] > 0) {
                 return;
             }
         }
 
-        for (var i = 0, cols = points.length; i < cols; i++) {
-            for (var j = 0, l = points[i].length; j < l; j++) {
-                var p = points[i][j];
+        for (let i = 0, cols = points.length; i < cols; i++) {
+            for (let j = 0, l = points[i].length; j < l; j++) {
+                let p = points[i][j];
                 Tetris.boxes[p[0] - 1][p[1]] = Tetris.boxes[p[0]][p[1]];
                 Tetris.boxes[p[0]][p[1]] = 0;
                 p[0]--;
@@ -1090,16 +1089,16 @@ var Tetris = {
 
         // 检测右边是否有方块存在，如果有不能移动
         var mostRightColumn = points[cols - 1];
-        for (var i = 0, l = mostRightColumn.length; i < l; i++) {
+        for (let i = 0, l = mostRightColumn.length; i < l; i++) {
             point = mostRightColumn[i];
             if (Tetris.boxes[point[0] + 1][point[1]] > 0) {
                 return;
             }
         }
 
-        for (var i = cols - 1; i >= 0; i--) {
-            for (var j = 0, l = points[i].length; j < l; j++) {
-                var p = points[i][j];
+        for (let i = cols - 1; i >= 0; i--) {
+            for (let j = 0, l = points[i].length; j < l; j++) {
+                let p = points[i][j];
                 Tetris.boxes[p[0] + 1][p[1]] = Tetris.boxes[p[0]][p[1]];
                 Tetris.boxes[p[0]][p[1]] = 0;
                 p[0]++;
@@ -1118,7 +1117,7 @@ var Tetris = {
             rows = Tetris.boxNum.rows,
             type = +Tetris.currentBlock.type;
         //寻找每一列可以下落的最小值
-        for (var i = 0; i < cols; i++) {
+        for (let i = 0; i < cols; i++) {
             //每一列的第一行坐标
             p = points[i][0];
             if (p[1] > maxY) maxY = p[1];
@@ -1136,8 +1135,8 @@ var Tetris = {
         // minDepth为零的场景是定时器刚把方块移动到不能再次移动的位置，这里就不做任何操作了，等定时器下次调用刷新、清行即可
         if (minDepth === 0) return;
 
-        for (var i = 0; i < cols; i++) {
-            for (var j = 0, l = points[i].length; j < l; j++) {
+        for (let i = 0; i < cols; i++) {
+            for (let j = 0, l = points[i].length; j < l; j++) {
                 p = points[i][j];
                 Tetris.boxes[p[0]][p[1] + minDepth] = type;
                 Tetris.boxes[p[0]][p[1]] = 0;
@@ -1163,7 +1162,7 @@ var Tetris = {
             y = p[1];
         //检测边缘
         if (o = relativeCoordinate.collisionDetection.collision) {
-            for (var i = 0, l = o.length; i < l; i++) {
+            for (let i = 0, l = o.length; i < l; i++) {
                 p = o[i];
                 if (p.isLeft === true) {
                     if (x + p.distance < 0) {
@@ -1180,7 +1179,7 @@ var Tetris = {
         }
         //检测碰撞
         o = relativeCoordinate.collisionDetection.coordinates;
-        for (var i = 0, l = o.length; i < l; i++) {
+        for (let i = 0, l = o.length; i < l; i++) {
             p = o[i];
 
             xChecked = x + p[0];
@@ -1197,7 +1196,7 @@ var Tetris = {
         }
         //移动方格
         o = relativeCoordinate.changedCoordinates;
-        for (var i = 0, l = o.before.length; i < l; i++) {
+        for (let i = 0, l = o.before.length; i < l; i++) {
             p = o.after[i];
 
             xNew = x + p[0];
@@ -1223,7 +1222,7 @@ var Tetris = {
         var lastHighBound = -1;
         var blocksMovementOffsets = [];
 
-        A: for (var i = offset; i >= 0; i--) {
+        A: for (let i = offset; i >= 0; i--) {
             for (var j = 0; j < cols; j++) {
                 if (Tetris.boxes[j][i] === 0) {
                     if (lastHighBound > -1) {
@@ -1271,15 +1270,15 @@ var Tetris = {
      * 可消除行存在，比如第19-17行一段可以消除，14-13一段也可以消除。
      */
     moveBlocks: function (blocksMovementOffsets) {
-        console.log("Block移动数组: " + JSON.stringify(blocksMovementOffsets));
+        console.log(`Block移动数组: ${JSON.stringify(blocksMovementOffsets)}.`);
 
         var prevRemovedLines = 0;
-        for (var i = 0, l = blocksMovementOffsets.length; i < l; i++) {
-            var lowBound = 0;
+        for (let i = 0, l = blocksMovementOffsets.length; i < l; i++) {
+            let lowBound = 0;
             if (i + 1 < l) {
                 lowBound = blocksMovementOffsets[i + 1].offset;
             }
-            var blocksMovementOffset = blocksMovementOffsets[i];
+            let blocksMovementOffset = blocksMovementOffsets[i];
             Tetris.doMoveBlocks(lowBound, blocksMovementOffset.offset - blocksMovementOffset.lines, blocksMovementOffset.lines + prevRemovedLines);
             prevRemovedLines += blocksMovementOffset.lines;
         }
@@ -1289,13 +1288,13 @@ var Tetris = {
      */
     doMoveBlocks: function (low, high, lines) {
         // 下移
-        for (var i = 0, cols = Tetris.boxNum.cols; i < cols; i++) {
-            for (var j = high; j > low; j--) {
+        for (let i = 0, cols = Tetris.boxNum.cols; i < cols; i++) {
+            for (let j = high; j > low; j--) {
                 Tetris.boxes[i][j + lines] = Tetris.boxes[i][j];
                 Tetris.boxes[i][j] = 0;
             }
         }
-        console.log("把(" + low + ", " + high + "]之间的块下移了" + lines + "行");
+        console.log(`把(${low}, ${high}]之间的块下移了${lines}行.`);
     },
     /**
      * 播放碰撞音效
